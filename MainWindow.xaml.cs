@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+#if NET6_0_OR_GREATER
+using System.Text.Json;
+#else
 using System.Web.Script.Serialization;
+#endif
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -230,19 +236,61 @@ namespace IsaacRepentancePlusAchievements
         private string GetAppBaseDir()
         {
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            if (Directory.Exists(Path.Combine(baseDir, "Data")))
+            if (File.Exists(Path.Combine(baseDir, "Data", "achievements.json")))
             {
                 return baseDir;
             }
             DirectoryInfo parent = Directory.GetParent(baseDir);
             while (parent != null)
             {
-                if (Directory.Exists(Path.Combine(parent.FullName, "Data")))
+                if (File.Exists(Path.Combine(parent.FullName, "Data", "achievements.json")))
                 {
                     return parent.FullName;
                 }
                 parent = parent.Parent;
             }
+
+            // Standalone Single-EXE fallback: extract embedded assets_bundle.zip into LocalAppData cache
+            string cacheDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "IsaacRepentancePlusAchievements",
+                "v1.3.0");
+
+            string cachedJson = Path.Combine(cacheDir, "Data", "achievements.json");
+            if (File.Exists(cachedJson))
+            {
+                return cacheDir;
+            }
+
+            try
+            {
+                Assembly asm = Assembly.GetExecutingAssembly();
+                string resName = asm.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith("assets_bundle.zip", StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrEmpty(resName))
+                {
+                    if (Directory.Exists(cacheDir))
+                    {
+                        Directory.Delete(cacheDir, true);
+                    }
+                    Directory.CreateDirectory(cacheDir);
+                    string tempZip = Path.Combine(cacheDir, "assets_bundle.zip");
+                    using (Stream rs = asm.GetManifestResourceStream(resName))
+                    using (FileStream fs = new FileStream(tempZip, FileMode.Create, FileAccess.Write))
+                    {
+                        rs.CopyTo(fs);
+                    }
+                    ZipFile.ExtractToDirectory(tempZip, cacheDir);
+                    File.Delete(tempZip);
+                    if (File.Exists(cachedJson))
+                    {
+                        return cacheDir;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
             return baseDir;
         }
 
@@ -260,9 +308,14 @@ namespace IsaacRepentancePlusAchievements
             }
 
             string jsonText = File.ReadAllText(jsonPath, Encoding.UTF8);
+#if NET6_0_OR_GREATER
+            JsonSerializerOptions opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            List<AchievementJsonDto> dtos = JsonSerializer.Deserialize<List<AchievementJsonDto>>(jsonText, opts);
+#else
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             serializer.MaxJsonLength = int.MaxValue;
             List<AchievementJsonDto> dtos = serializer.Deserialize<List<AchievementJsonDto>>(jsonText);
+#endif
 
             Dictionary<int, AchievementItem> byId = new Dictionary<int, AchievementItem>();
 

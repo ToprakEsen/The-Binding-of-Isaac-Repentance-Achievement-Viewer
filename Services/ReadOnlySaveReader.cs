@@ -126,6 +126,61 @@ namespace IsaacRepentancePlusAchievements.Services
                     {
                         candidates.Add(new CandidateFile(directRep, "Belgelerim (Repentance)", 75));
                     }
+                    string repPrefix = Path.Combine(repDocs, string.Format("rep_persistentgamedata{0}.dat", slotNumber));
+                    if (File.Exists(repPrefix))
+                    {
+                        candidates.Add(new CandidateFile(repPrefix, "Belgelerim (Repentance)", 76));
+                    }
+                }
+
+                string abpDocs = Path.Combine(docsDir, "My Games", "Binding of Isaac Afterbirth+");
+                if (Directory.Exists(abpDocs))
+                {
+                    string directAbp = Path.Combine(abpDocs, string.Format("persistentgamedata{0}.dat", slotNumber));
+                    if (File.Exists(directAbp))
+                    {
+                        candidates.Add(new CandidateFile(directAbp, "Belgelerim (Afterbirth+)", 65));
+                    }
+                }
+
+                string rebDocs = Path.Combine(docsDir, "My Games", "Binding of Isaac Rebirth");
+                if (Directory.Exists(rebDocs))
+                {
+                    string directReb = Path.Combine(rebDocs, string.Format("persistentgamedata{0}.dat", slotNumber));
+                    if (File.Exists(directReb))
+                    {
+                        candidates.Add(new CandidateFile(directReb, "Belgelerim (Rebirth)", 55));
+                    }
+                }
+            }
+
+            // 3. Check Non-Steam / Offline / Emulator Save Directories (Goldberg, CODEX, RUNE, SmartSteamEmu)
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string publicDocs = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+
+            string[] nonSteamRemoteDirs = new string[]
+            {
+                !string.IsNullOrEmpty(appData) ? Path.Combine(appData, "Goldberg SteamEmu Saves", "250900", "remote") : null,
+                !string.IsNullOrEmpty(appData) ? Path.Combine(appData, "Steam", "CODEX", "250900", "remote") : null,
+                !string.IsNullOrEmpty(appData) ? Path.Combine(appData, "SmartSteamEmu", "250900", "remote") : null,
+                !string.IsNullOrEmpty(localAppData) ? Path.Combine(localAppData, "SKIDROW", "250900", "Storage") : null,
+                !string.IsNullOrEmpty(publicDocs) ? Path.Combine(publicDocs, "Steam", "CODEX", "250900", "remote") : null,
+                !string.IsNullOrEmpty(publicDocs) ? Path.Combine(publicDocs, "Steam", "RUNE", "250900", "remote") : null
+            };
+
+            foreach (string nsDir in nonSteamRemoteDirs)
+            {
+                if (!string.IsNullOrEmpty(nsDir) && Directory.Exists(nsDir))
+                {
+                    string f1 = Path.Combine(nsDir, string.Format("rep+persistentgamedata{0}.dat", slotNumber));
+                    if (File.Exists(f1)) candidates.Add(new CandidateFile(f1, "Non-Steam (Repentance+)", 92));
+
+                    string f2 = Path.Combine(nsDir, string.Format("rep_persistentgamedata{0}.dat", slotNumber));
+                    if (File.Exists(f2)) candidates.Add(new CandidateFile(f2, "Non-Steam (Repentance)", 78));
+
+                    string f3 = Path.Combine(nsDir, string.Format("persistentgamedata{0}.dat", slotNumber));
+                    if (File.Exists(f3)) candidates.Add(new CandidateFile(f3, "Non-Steam Save", 68));
                 }
             }
 
