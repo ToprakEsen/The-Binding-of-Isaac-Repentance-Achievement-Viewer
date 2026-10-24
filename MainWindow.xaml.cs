@@ -29,7 +29,7 @@ namespace IsaacRepentancePlusAchievements
         private DispatcherTimer _watcherDebounceTimer;
         private bool _isInitialized = false;
 
-        // Ordered progression of 11 iconic Binding of Isaac milestones
+        // Ordered progression of 11 iconic Binding of Isaac milestones (for Milestones filter tab)
         private static readonly int[] MilestoneOrderIds = new int[]
         {
             34,  // It Lives!
@@ -45,18 +45,29 @@ namespace IsaacRepentancePlusAchievements
             637  // Dead God
         };
 
+        // 6 featured milestones displayed in the clean top showcase strip
+        private static readonly int[] FeaturedMilestoneIds = new int[]
+        {
+            34,  // It Lives!
+            635, // A Strange Door
+            69,  // Platinum God
+            84,  // Real Platinum God
+            339, // 1000000%
+            637  // Dead God
+        };
+
         private static readonly Dictionary<int, string> MilestoneShortNames = new Dictionary<int, string>
         {
             { 34,  "It Lives!" },
             { 407, "Secret Exit" },
             { 635, "Strange Door" },
             { 69,  "Platinum God" },
-            { 84,  "Real Plat. God" },
+            { 84,  "Real Platinum God" },
             { 156, "Godhead" },
             { 235, "1001%" },
             { 339, "1000000%" },
             { 547, "Mega Mush" },
-            { 636, "Death Cert." },
+            { 636, "Death Certificate" },
             { 637, "Dead God" }
         };
 
@@ -156,39 +167,27 @@ namespace IsaacRepentancePlusAchievements
                 ? "The Binding of Isaac: Repentance+ - Başarım Günlüğü"
                 : "The Binding of Isaac: Repentance+ - Achievement Viewer";
             TxtTitleBadge.Text = _isTurkish ? "BAŞARIM GÜNLÜĞÜ" : "ACHIEVEMENT VIEWER";
-            TxtTitleSubtitle.Text = _isTurkish
-                ? "Otomatik Save Okuyucu • 641 Resmi Başarım • Türkçe ve İngilizce Açıklamalar"
-                : "Auto Save Reader • 641 Official Achievements • Bilingual Unlock Guide";
-            TxtReadOnlyShield.Text = _isTurkish
-                ? "SALT OKUNUR (READ-ONLY) MOD AKTİF — SAVE DOSYASI DÜZENLENEMEZ"
-                : "READ-ONLY MODE ACTIVE — SAVE FILE CANNOT BE MODIFIED";
+            TxtReadOnlyShield.Text = _isTurkish ? "🔒 Salt Okunur" : "🔒 Read-Only";
             TxtBtnRefresh.Text = _isTurkish ? "↻ Yenile" : "↻ Refresh";
             TxtBtnSelectSave.Text = _isTurkish ? "📂 Save Seç" : "📂 Open Save";
 
             // 3. Update Save Slot Headers & Stats Labels
-            TxtSlot1Header.Text = _isTurkish ? "1. KAYIT" : "SAVE FILE 1";
-            TxtSlot2Header.Text = _isTurkish ? "2. KAYIT" : "SAVE FILE 2";
-            TxtSlot3Header.Text = _isTurkish ? "3. KAYIT" : "SAVE FILE 3";
+            TxtSlot1Header.Text = _isTurkish ? "1. KAYIT" : "SAVE 1";
+            TxtSlot2Header.Text = _isTurkish ? "2. KAYIT" : "SAVE 2";
+            TxtSlot3Header.Text = _isTurkish ? "3. KAYIT" : "SAVE 3";
 
             LblStatMomKills.Text = "MOM KILLS";
-            LblStatDeaths.Text = _isTurkish ? "ÖLÜM (DEATHS)" : "DEATHS";
-            LblStatStreak.Text = _isTurkish ? "SERİ (EN İYİ)" : "STREAK (BEST)";
-            LblStatDonation.Text = _isTurkish ? "BAĞIŞ / GREED" : "DONATION / GREED";
-            LblStatEden.Text = _isTurkish ? "EDEN TOKEN" : "EDEN TOKENS";
-            LblStatItemsChallenges.Text = _isTurkish ? "EŞYA / CHALLENGE" : "ITEMS / CHALLENGES";
+            LblStatDeaths.Text = _isTurkish ? "ÖLÜM" : "DEATHS";
+            LblStatStreak.Text = _isTurkish ? "SERİ" : "STREAK";
+            LblStatEden.Text = "EDEN TOKENS";
 
             // 4. Update Milestones Bar Headers
-            LblMilestonesTitle.Text = _isTurkish
-                ? "🏆 ÖNEMLİ KİLOMETRE TAŞLARI (PLATINUM GOD • 1000000% • DEAD GOD)"
-                : "🏆 MAJOR GAME MILESTONES (PLATINUM GOD • 1000000% • DEAD GOD)";
-            LblMilestonesHint.Text = _isTurkish
-                ? "Detaylarını ve nasıl açıldığını görmek için herhangi bir kilometre taşına tıklayın →"
-                : "Click any milestone trophy to inspect its unlock guide →";
+            LblMilestonesTitle.Text = _isTurkish ? "🏆 KİLOMETRE TAŞLARI" : "🏆 MILESTONES";
 
             // 5. Update Search & Filter Controls
             TxtSearchPlaceholder.Text = _isTurkish
-                ? "Başarım adı, #ID (örn: 641) veya açıklama ara..."
-                : "Search achievement name, #ID (e.g. 641) or guide...";
+                ? "Başarım adı veya #ID ara..."
+                : "Search achievement or #ID...";
             CbiDlcAll.Content = _isTurkish ? "Tüm Paketler (1-641)" : "All Packs (1-641)";
             LblCategoryFilter.Text = _isTurkish ? "Kategori:" : "Category:";
             CbiCatAll.Content = _isTurkish ? "Tüm Kategoriler" : "All Categories";
@@ -308,7 +307,17 @@ namespace IsaacRepentancePlusAchievements
                 }
             }
 
-            IcMilestones.ItemsSource = _milestoneAchievements;
+            List<AchievementItem> featuredMilestones = new List<AchievementItem>();
+            foreach (int fId in FeaturedMilestoneIds)
+            {
+                AchievementItem fItem;
+                if (byId.TryGetValue(fId, out fItem))
+                {
+                    featuredMilestones.Add(fItem);
+                }
+            }
+
+            IcMilestones.ItemsSource = featuredMilestones;
         }
 
         private ImageSource LoadIconBitmapSafe(string path)
@@ -395,19 +404,16 @@ namespace IsaacRepentancePlusAchievements
 
             // Update Milestone unlocked counter
             int unlockedMilestones = _milestoneAchievements.Count(m => m.IsUnlocked);
-            TxtMilestonesProgress.Text = _isTurkish
-                ? string.Format("{0} / {1} Açık", unlockedMilestones, _milestoneAchievements.Count)
-                : string.Format("{0} / {1} Unlocked", unlockedMilestones, _milestoneAchievements.Count);
+            TxtMilestonesProgress.Text = string.Format("{0} / {1}", unlockedMilestones, _milestoneAchievements.Count);
 
-            string rankUpper = active.GetRankTitle(_isTurkish).ToUpperInvariant();
             if (_isTurkish)
             {
-                TxtActiveSlotHeader.Text = string.Format("AKTİF KAYIT: {0}. DOSYA ({1})", active.SlotNumber, rankUpper);
+                TxtActiveSlotHeader.Text = string.Format("{0}. KAYIT DOSYASI", active.SlotNumber);
                 TxtProgressSummary.Text = string.Format("{0} Açık / {1} Kilitli (%{2:0.0})", active.UnlockedCount, active.LockedCount, active.CompletionPercent);
             }
             else
             {
-                TxtActiveSlotHeader.Text = string.Format("ACTIVE SAVE: FILE {0} ({1})", active.SlotNumber, rankUpper);
+                TxtActiveSlotHeader.Text = string.Format("SAVE FILE {0}", active.SlotNumber);
                 TxtProgressSummary.Text = string.Format(CultureInfo.InvariantCulture, "{0} Unlocked / {1} Locked ({2:0.0}%)", active.UnlockedCount, active.LockedCount, active.CompletionPercent);
             }
 
@@ -447,12 +453,8 @@ namespace IsaacRepentancePlusAchievements
             // Live Counters
             TxtStatMomKills.Text = active.MomKills.ToString("N0");
             TxtStatDeaths.Text = active.Deaths.ToString("N0");
-            TxtStatStreak.Text = _isTurkish
-                ? string.Format("{0} (En İyi: {1})", active.WinStreak, active.BestStreak)
-                : string.Format("{0} (Best: {1})", active.WinStreak, active.BestStreak);
-            TxtStatDonation.Text = string.Format("{0}¢ / {1}¢", active.DonationMachineCoins, active.GreedMachineCoins);
+            TxtStatStreak.Text = active.WinStreak.ToString("N0");
             TxtStatEden.Text = active.EdenTokens.ToString("N0");
-            TxtStatItemsChallenges.Text = string.Format("{0} / {1}", active.CollectiblesSeen, active.ChallengesCompleted);
 
             // Filter button counts
             if (_isTurkish)
