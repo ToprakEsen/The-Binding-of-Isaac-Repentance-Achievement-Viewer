@@ -45,12 +45,16 @@
 
 ## 🚀 Getting Started
 
-### Option 1: Direct Run (Pre-built Executable)
-1. Clone or download this repository.
-2. Run `IsaacRepentancePlusAchievements.exe` directly (make sure the `Data` and `Assets` folders remain in the same directory as the `.exe`).
+### Option 1: Download from GitHub Releases (Recommended — Single-File `.exe`)
+You don't need to clone the repository or keep external `Data`/`Assets` folders next to the app. Simply download one of the portable single-file executables from the [**GitHub Releases**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/latest) page and run it directly:
+
+| Download Package | Size | Description |
+| :--- | :---: | :--- |
+| [**`IsaacAchievementViewer-v1.3.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Standalone.exe) | ~70 MB | **No `.NET` required.** Fully self-contained single-file executable with the .NET 8 runtime and all 641 achievement icons embedded inside. |
+| [**`IsaacAchievementViewer-v1.3.0-Duz.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Duz.exe) | ~2 MB | **Lightweight version.** Uses Windows' built-in `.NET Framework 4.8` with all 641 achievement icons and database embedded inside a single `.exe`. |
 
 ### Option 2: Build from Source
-You can compile the project on any Windows PC using the built-in `.NET Framework MSBuild` without installing external dependencies:
+If you want to compile the project from source on Windows using the built-in `.NET Framework MSBuild`:
 
 ```powershell
 & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe" "IsaacRepentancePlusAchievements.csproj" /p:Configuration=Release

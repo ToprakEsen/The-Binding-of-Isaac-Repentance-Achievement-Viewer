@@ -44,12 +44,16 @@
 
 ## 🚀 Kurulum ve Çalıştırma
 
-### Seçenek 1: Doğrudan Çalıştırma (Hazır `.exe`)
-1. Bu depoyu indirin.
-2. `IsaacRepentancePlusAchievements.exe` dosyasını doğrudan çalıştırın (`Data` ve `Assets` klasörleri `.exe` ile aynı dizinde bulunmalıdır).
+### Seçenek 1: GitHub Releases Üzerinden İndirme (Önerilen — Tek Dosya `.exe`)
+Depoyu klonlamanıza veya yanına `Data` / `Assets` klasörleri koymanıza gerek yoktur. Doğrudan [**GitHub Releases**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/latest) sayfasından ihtiyacınıza uygun tek dosyalık `.exe` sürümünü indirip çalıştırabilirsiniz:
+
+| İndirme Seçeneği | Boyut | Açıklama |
+| :--- | :---: | :--- |
+| [**`IsaacAchievementViewer-v1.3.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Standalone.exe) | ~70 MB | **`.NET` kurulumu gerektirmez.** `.NET 8` çalışma zamanı ve 641 başarım görseli tek bir `.exe` içine gömülüdür; her bilgisayarda doğrudan çalışır. |
+| [**`IsaacAchievementViewer-v1.3.0-Duz.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Duz.exe) | ~2 MB | **Hafif sürüm.** Windows'ta yerleşik bulunan `.NET Framework 4.8` altyapısını kullanır; 641 başarım görseli ve veritabanı yine tek `.exe` içine gömülüdür. |
 
 ### Seçenek 2: Kaynak Koddan Derleme
-Windows üzerinde harici bir kurulum gerektirmeden yerleşik `.NET Framework MSBuild` ile derleyebilirsiniz:
+Projeyi kaynak koddan derlemek isterseniz Windows üzerindeki yerleşik `.NET Framework MSBuild` ile derleyebilirsiniz:
 
 ```powershell
 & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe" "IsaacRepentancePlusAchievements.csproj" /p:Configuration=Release
