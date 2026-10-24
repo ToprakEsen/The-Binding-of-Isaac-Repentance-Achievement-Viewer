@@ -488,13 +488,13 @@ namespace IsaacRepentancePlusAchievements
         {
             if (isSelected)
             {
-                btn.Background = new SolidColorBrush(Color.FromRgb(54, 36, 28));
-                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(224, 174, 82));
+                btn.Background = new SolidColorBrush(Color.FromRgb(34, 39, 54));
+                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(229, 184, 92));
             }
             else
             {
-                btn.Background = new SolidColorBrush(Color.FromRgb(28, 20, 16));
-                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(74, 52, 41));
+                btn.Background = new SolidColorBrush(Color.FromRgb(24, 27, 36));
+                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(42, 47, 64));
             }
         }
 
@@ -510,15 +510,15 @@ namespace IsaacRepentancePlusAchievements
         {
             if (active)
             {
-                btn.Background = new SolidColorBrush(Color.FromRgb(115, 34, 28));
-                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(224, 174, 82));
-                btn.Foreground = new SolidColorBrush(Color.FromRgb(255, 244, 224));
+                btn.Background = new SolidColorBrush(Color.FromRgb(40, 46, 64));
+                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(229, 184, 92));
+                btn.Foreground = new SolidColorBrush(Color.FromRgb(242, 244, 248));
             }
             else
             {
-                btn.Background = new SolidColorBrush(Color.FromRgb(37, 27, 22));
-                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(78, 56, 44));
-                btn.Foreground = new SolidColorBrush(Color.FromRgb(214, 195, 165));
+                btn.Background = new SolidColorBrush(Color.FromRgb(24, 27, 36));
+                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(43, 48, 64));
+                btn.Foreground = new SolidColorBrush(Color.FromRgb(180, 188, 208));
             }
         }
 

@@ -200,9 +200,9 @@ namespace IsaacRepentancePlusAchievements.Models
             {
                 if (_isUnlocked)
                 {
-                    return new SolidColorBrush(Color.FromRgb(126, 224, 117)); // Bright Emerald
+                    return new SolidColorBrush(Color.FromRgb(74, 222, 128)); // Soft Mint Emerald
                 }
-                return new SolidColorBrush(Color.FromRgb(214, 105, 105)); // Soft Crimson
+                return new SolidColorBrush(Color.FromRgb(148, 156, 176)); // Muted Cool Slate
             }
         }
 
@@ -212,9 +212,9 @@ namespace IsaacRepentancePlusAchievements.Models
             {
                 if (_isTurkish)
                 {
-                    return _isUnlocked ? "BU BAŞARIM KAYIT DOSYASINDA AÇILMIŞ" : "BU BAŞARIM HENÜZ KİLİTLİ";
+                    return _isUnlocked ? "✓ KAYIT DOSYASINDA AÇIK" : "🔒 HENÜZ KİLİTLİ";
                 }
-                return _isUnlocked ? "UNLOCKED IN THIS SAVE FILE" : "CURRENTLY LOCKED IN THIS SAVE";
+                return _isUnlocked ? "✓ UNLOCKED IN SAVE" : "🔒 LOCKED IN SAVE";
             }
         }
 
@@ -224,9 +224,9 @@ namespace IsaacRepentancePlusAchievements.Models
             {
                 if (_isTurkish)
                 {
-                    return _isUnlocked ? "SECRET FOUND! (SIR AÇILDI)" : "LOCKED SECRET (KİLİTLİ SIR)";
+                    return _isUnlocked ? "BAŞARIM DETAYI (AÇIK)" : "BAŞARIM DETAYI (KİLİTLİ)";
                 }
-                return _isUnlocked ? "SECRET FOUND!" : "LOCKED SECRET";
+                return _isUnlocked ? "ACHIEVEMENT DETAILS" : "LOCKED ACHIEVEMENT";
             }
         }
 
@@ -241,9 +241,9 @@ namespace IsaacRepentancePlusAchievements.Models
             {
                 if (_isUnlocked)
                 {
-                    return new SolidColorBrush(Color.FromRgb(186, 142, 62)); // Aged Gold
+                    return new SolidColorBrush(Color.FromRgb(54, 62, 82)); // Crisp Slate Border
                 }
-                return new SolidColorBrush(Color.FromRgb(74, 52, 43)); // Dark Cellar Wood
+                return new SolidColorBrush(Color.FromRgb(38, 43, 56)); // Subtle Dark Slate
             }
         }
 
@@ -253,9 +253,9 @@ namespace IsaacRepentancePlusAchievements.Models
             {
                 if (_isUnlocked)
                 {
-                    return new SolidColorBrush(Color.FromRgb(43, 33, 28)); // Warm Dark Parchment Stone
+                    return new SolidColorBrush(Color.FromRgb(29, 33, 45)); // Elevated Slate Card
                 }
-                return new SolidColorBrush(Color.FromRgb(27, 21, 18)); // Deep Basement Shadow
+                return new SolidColorBrush(Color.FromRgb(21, 24, 33)); // Muted Deep Slate Card
             }
         }
 
@@ -265,9 +265,9 @@ namespace IsaacRepentancePlusAchievements.Models
             {
                 if (_isUnlocked)
                 {
-                    return new SolidColorBrush(Color.FromRgb(58, 118, 52)); // Isaac Emerald Green
+                    return new SolidColorBrush(Color.FromRgb(26, 66, 49)); // Deep Emerald Tint
                 }
-                return new SolidColorBrush(Color.FromRgb(138, 32, 32)); // Isaac Blood Red
+                return new SolidColorBrush(Color.FromRgb(46, 33, 42)); // Deep Muted Crimson-Slate
             }
         }
 
@@ -275,11 +275,7 @@ namespace IsaacRepentancePlusAchievements.Models
         {
             get
             {
-                if (Dlc == "Repentance+") return new SolidColorBrush(Color.FromRgb(176, 40, 40));
-                if (Dlc == "Repentance") return new SolidColorBrush(Color.FromRgb(128, 36, 56));
-                if (Dlc == "Afterbirth+") return new SolidColorBrush(Color.FromRgb(92, 62, 115));
-                if (Dlc == "Afterbirth") return new SolidColorBrush(Color.FromRgb(48, 90, 122));
-                return new SolidColorBrush(Color.FromRgb(110, 82, 52));
+                return new SolidColorBrush(Color.FromRgb(37, 42, 56)); // Unified Sleek Slate Pill
             }
         }
 

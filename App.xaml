@@ -34,18 +34,18 @@
                         <Border x:Name="ThumbBorder"
                                 Margin="2"
                                 CornerRadius="4"
-                                Background="#734E38"
-                                BorderBrush="#B08052"
+                                Background="#383E52"
+                                BorderBrush="#4E5670"
                                 BorderThickness="1">
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ThumbBorder" Property="Background" Value="#9E6B4B"/>
-                                <Setter TargetName="ThumbBorder" Property="BorderBrush" Value="#E8B864"/>
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="#505873"/>
+                                <Setter TargetName="ThumbBorder" Property="BorderBrush" Value="#E5B85C"/>
                             </Trigger>
                             <Trigger Property="IsDragging" Value="True">
-                                <Setter TargetName="ThumbBorder" Property="Background" Value="#B83B2B"/>
-                                <Setter TargetName="ThumbBorder" Property="BorderBrush" Value="#FFD478"/>
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="#E5B85C"/>
+                                <Setter TargetName="ThumbBorder" Property="BorderBrush" Value="#FFE094"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -58,8 +58,8 @@
             <Grid Width="12" Margin="2,2,0,2">
                 <!-- Continuous Smooth Track Pill -->
                 <Border CornerRadius="5"
-                        Background="#17100D"
-                        BorderBrush="#3D2B22"
+                        Background="#11131A"
+                        BorderBrush="#252936"
                         BorderThickness="1"/>
                 <Track x:Name="PART_Track"
                        Margin="0,2"
@@ -87,8 +87,8 @@
         <ControlTemplate x:Key="IsaacHorizontalScrollBar" TargetType="{x:Type ScrollBar}">
             <Grid Height="12" Margin="2,0,2,2">
                 <Border CornerRadius="5"
-                        Background="#17100D"
-                        BorderBrush="#3D2B22"
+                        Background="#11131A"
+                        BorderBrush="#252936"
                         BorderThickness="1"/>
                 <Track x:Name="PART_Track"
                        Margin="2,0"
@@ -137,32 +137,32 @@
                 </Grid.ColumnDefinitions>
                 <Border x:Name="Border"
                         Grid.ColumnSpan="2"
-                        CornerRadius="4"
-                        Background="#17110E"
-                        BorderBrush="#543B2E"
+                        CornerRadius="5"
+                        Background="#181B24"
+                        BorderBrush="#2C3142"
                         BorderThickness="1"/>
                 <Path x:Name="Arrow"
                       Grid.Column="1"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      Fill="#C49746"
+                      Fill="#9BA3B8"
                       Data="M 0,0 L 4.5,5 L 9,0 Z"/>
             </Grid>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="Border" Property="Background" Value="#261B16"/>
-                    <Setter TargetName="Border" Property="BorderBrush" Value="#C49746"/>
+                    <Setter TargetName="Border" Property="Background" Value="#212532"/>
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#E5B85C"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter TargetName="Border" Property="Background" Value="#2E2019"/>
-                    <Setter TargetName="Border" Property="BorderBrush" Value="#E6B85C"/>
+                    <Setter TargetName="Border" Property="Background" Value="#242938"/>
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#E5B85C"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
         <Style TargetType="{x:Type ComboBoxItem}">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Foreground" Value="#EAD7BB"/>
+            <Setter Property="Foreground" Value="#D8DCE8"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -172,18 +172,18 @@
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 Padding="{TemplateBinding Padding}"
-                                CornerRadius="3"
+                                CornerRadius="4"
                                 Margin="2,1">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#4A251D"/>
-                                <Setter Property="Foreground" Value="#FFF4E0"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#282E40"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#69231B"/>
-                                <Setter Property="Foreground" Value="#FFD782"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#32394F"/>
+                                <Setter Property="Foreground" Value="#E5B85C"/>
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -197,7 +197,7 @@
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="Foreground" Value="#F0DEC2"/>
+            <Setter Property="Foreground" Value="#E6E9F2"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -228,10 +228,10 @@
                                       MinWidth="{TemplateBinding ActualWidth}"
                                       MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                     <Border x:Name="DropDownBorder"
-                                            Background="#1A120E"
-                                            BorderThickness="1.5"
-                                            BorderBrush="#8C643B"
-                                            CornerRadius="4"
+                                            Background="#181B24"
+                                            BorderThickness="1"
+                                            BorderBrush="#3A4158"
+                                            CornerRadius="5"
                                             Margin="0,2,0,0"
                                             Padding="2">
                                         <ScrollViewer Margin="1" SnapsToDevicePixels="True">
