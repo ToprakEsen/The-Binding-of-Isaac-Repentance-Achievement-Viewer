@@ -422,130 +422,8 @@
                     </Grid>
                 </Border>
 
-                <!-- ==================== ROW 2: CLEAN 6-TROPHY MILESTONES STRIP ==================== -->
-                <Border Grid.Row="2"
-                        Background="#11131B"
-                        BorderBrush="#222634"
-                        BorderThickness="0,0,0,1"
-                        Padding="14,6">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Left Label -->
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,14,0">
-                            <TextBlock x:Name="LblMilestonesTitle"
-                                       Text="🏆 MILESTONES"
-                                       Foreground="#E5B85C"
-                                       FontSize="11.5"
-                                       FontWeight="Bold"
-                                       VerticalAlignment="Center"/>
-                            <Border Background="#1C202B" BorderBrush="#32384C" BorderThickness="1" CornerRadius="4" Padding="7,1" Margin="8,0,0,0" VerticalAlignment="Center">
-                                <TextBlock x:Name="TxtMilestonesProgress"
-                                           Text="3 / 11"
-                                           Foreground="#D8DCE8"
-                                           FontSize="10.5"
-                                           FontWeight="SemiBold"/>
-                            </Border>
-                            <TextBlock x:Name="LblMilestonesHint" Visibility="Collapsed"/>
-                        </StackPanel>
-
-                        <!-- 6 Major Completion Milestones Cards in a Single Clean Row -->
-                        <ItemsControl x:Name="IcMilestones" Grid.Column="1">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Columns="6"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Click="MilestoneCard_Click"
-                                            Tag="{Binding}"
-                                            Margin="3,0"
-                                            Cursor="Hand"
-                                            ToolTip="{Binding DisplayUnlockBy}">
-                                        <Button.Template>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="msBorder"
-                                                        Background="{Binding CardBackgroundBrush}"
-                                                        BorderBrush="{Binding CardBorderBrush}"
-                                                        BorderThickness="1"
-                                                        CornerRadius="5"
-                                                        Padding="7,4">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="32"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-
-                                                        <!-- 28x28 Milestone Icon + Lock Overlay -->
-                                                        <Border Grid.Column="0"
-                                                                Width="28" Height="28"
-                                                                Background="#0B0D12"
-                                                                BorderBrush="#32384C"
-                                                                BorderThickness="1"
-                                                                CornerRadius="4"
-                                                                HorizontalAlignment="Left"
-                                                                VerticalAlignment="Center">
-                                                            <Grid>
-                                                                <Image Source="{Binding IconSource}"
-                                                                       Stretch="UniformToFill"
-                                                                       Opacity="{Binding ImageOpacity}"
-                                                                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-
-                                                                <Grid Visibility="{Binding LockOverlayVisibility}" Background="#55000000">
-                                                                    <Border Width="16" Height="16"
-                                                                            Background="#D912151E"
-                                                                            BorderBrush="#E5B85C"
-                                                                            BorderThickness="1"
-                                                                            CornerRadius="8"
-                                                                            HorizontalAlignment="Center"
-                                                                            VerticalAlignment="Center">
-                                                                        <Canvas Width="10" Height="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                            <Path Data="M 3,4.5 L 3,3 C 3,1.5 7,1.5 7,3 L 7,4.5"
-                                                                                  Stroke="#F0C775"
-                                                                                  StrokeThickness="1.3"
-                                                                                  Fill="Transparent"/>
-                                                                            <Rectangle Canvas.Left="2" Canvas.Top="4.2"
-                                                                                       Width="6" Height="4.5"
-                                                                                       RadiusX="1" RadiusY="1"
-                                                                                       Fill="#E5B85C"/>
-                                                                        </Canvas>
-                                                                    </Border>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Border>
-
-                                                        <!-- Milestone Title & Status -->
-                                                        <StackPanel Grid.Column="1" Margin="6,0,0,0" VerticalAlignment="Center">
-                                                            <TextBlock Text="{Binding ShortMilestoneTitle}"
-                                                                       Foreground="#F2F4F8"
-                                                                       FontWeight="Bold"
-                                                                       FontSize="11"
-                                                                       TextTrimming="CharacterEllipsis"/>
-                                                            <TextBlock Text="{Binding MilestoneStatusText}"
-                                                                       Foreground="{Binding MilestoneStatusForeground}"
-                                                                       FontWeight="SemiBold"
-                                                                       FontSize="9.5"/>
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="msBorder" Property="BorderBrush" Value="#E5B85C"/>
-                                                        <Setter TargetName="msBorder" Property="Background" Value="#252B3B"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Grid>
-                </Border>
+                <!-- Row 2 collapsed (Milestones moved into Right Trophy Cabinet) -->
+                <Border Grid.Row="2" Visibility="Collapsed"/>
 
                 <!-- ==================== ROW 3: SEARCH & FILTER CONTROL BAR ==================== -->
                 <Border Grid.Row="3"
@@ -843,155 +721,286 @@
                         </ListBox>
                     </Border>
 
-                    <!-- RIGHT: UNIFIED SLEEK DARK DETAIL CARD -->
+                    <!-- RIGHT: UNIFIED SLEEK DARK DETAIL CARD + MILESTONE TROPHY CABINET -->
                     <Border Grid.Column="1"
                             Background="#151821"
                             BorderBrush="#262B3A"
                             BorderThickness="1"
                             CornerRadius="6"
-                            Padding="18,16">
-                        <StackPanel x:Name="DetailPanelContent">
-                            <!-- Header Pill -->
-                            <Border Background="#1E2230"
-                                    BorderBrush="#2E3448"
-                                    BorderThickness="1"
-                                    CornerRadius="4"
-                                    Padding="8,5"
-                                    Margin="0,0,0,16">
-                                <TextBlock x:Name="TxtDetailBanner"
-                                           Text="ACHIEVEMENT DETAILS"
-                                           Foreground="#B8C0D4"
-                                           FontWeight="Bold"
-                                           FontSize="11.5"
-                                           TextAlignment="Center"/>
-                            </Border>
+                            Padding="16,14">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <!-- Top: Selected Achievement Detail View -->
+                                <RowDefinition Height="*"/>
+                                <!-- Bottom: Milestone Trophy Cabinet -->
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                            <!-- 108x108 Artwork Frame with Lock Overlay when Locked -->
-                            <Border Width="108" Height="108"
-                                    Background="#0B0D12"
-                                    BorderBrush="#343B52"
-                                    BorderThickness="2"
-                                    CornerRadius="6"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,14">
-                                <Grid>
-                                    <Image x:Name="ImgDetailIcon"
-                                           Stretch="UniformToFill"
-                                           RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                            <!-- TOP: SELECTED ACHIEVEMENT DETAILS -->
+                            <StackPanel x:Name="DetailPanelContent" Grid.Row="0">
+                                <!-- Header Pill -->
+                                <Border Background="#1E2230"
+                                        BorderBrush="#2E3448"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="8,4"
+                                        Margin="0,0,0,12">
+                                    <TextBlock x:Name="TxtDetailBanner"
+                                               Text="ACHIEVEMENT DETAILS"
+                                               Foreground="#B8C0D4"
+                                               FontWeight="Bold"
+                                               FontSize="11"
+                                               TextAlignment="Center"/>
+                                </Border>
 
-                                    <Grid x:Name="DetailLockOverlay"
-                                          Background="#5E000000"
-                                          Visibility="Collapsed">
-                                        <Border Width="44" Height="44"
-                                                Background="#E512151E"
-                                                BorderBrush="#E5B85C"
-                                                BorderThickness="2"
-                                                CornerRadius="22"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center">
-                                            <Canvas Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <Path Data="M 9,13 L 9,9 C 9,4 21,4 21,9 L 21,13"
-                                                      Stroke="#F5CE7E"
-                                                      StrokeThickness="2.8"
-                                                      Fill="Transparent"/>
-                                                <Rectangle Canvas.Left="6" Canvas.Top="12.5"
-                                                           Width="18" Height="13"
-                                                           RadiusX="3" RadiusY="3"
-                                                           Fill="#E5B85C"/>
-                                            </Canvas>
-                                        </Border>
+                                <!-- 92x92 Artwork Frame with Lock Overlay when Locked -->
+                                <Border Width="92" Height="92"
+                                        Background="#0B0D12"
+                                        BorderBrush="#343B52"
+                                        BorderThickness="2"
+                                        CornerRadius="6"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,0,0,10">
+                                    <Grid>
+                                        <Image x:Name="ImgDetailIcon"
+                                               Stretch="UniformToFill"
+                                               RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                                        <Grid x:Name="DetailLockOverlay"
+                                              Background="#5E000000"
+                                              Visibility="Collapsed">
+                                            <Border Width="40" Height="40"
+                                                    Background="#E512151E"
+                                                    BorderBrush="#E5B85C"
+                                                    BorderThickness="2"
+                                                    CornerRadius="20"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
+                                                <Canvas Width="28" Height="28" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Path Data="M 8.5,12 L 8.5,8 C 8.5,3.5 19.5,3.5 19.5,8 L 19.5,12"
+                                                          Stroke="#F5CE7E"
+                                                          StrokeThickness="2.6"
+                                                          Fill="Transparent"/>
+                                                    <Rectangle Canvas.Left="5.5" Canvas.Top="11.5"
+                                                               Width="17" Height="12"
+                                                               RadiusX="2.5" RadiusY="2.5"
+                                                               Fill="#E5B85C"/>
+                                                </Canvas>
+                                            </Border>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Border>
+                                </Border>
 
-                            <!-- Achievement #ID and Title -->
-                            <TextBlock x:Name="TxtDetailIdAndName"
-                                       Text="#001 — Magdalene"
-                                       Foreground="#F2F4F8"
-                                       FontWeight="Bold"
-                                       FontSize="17"
-                                       TextAlignment="Center"
-                                       TextWrapping="Wrap"
-                                       Margin="0,0,0,10"/>
-
-                            <!-- Lock / Unlock Status Pill -->
-                            <Border x:Name="DetailStatusBorder"
-                                    Background="#1A4231"
-                                    CornerRadius="4"
-                                    Padding="12,4"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,0,0,16">
-                                <TextBlock x:Name="TxtDetailStatus"
-                                           Text="✓ UNLOCKED IN SAVE"
-                                           Foreground="#E8ECF4"
+                                <!-- Achievement #ID and Title -->
+                                <TextBlock x:Name="TxtDetailIdAndName"
+                                           Text="#001 — Magdalene"
+                                           Foreground="#F2F4F8"
                                            FontWeight="Bold"
-                                           FontSize="11"/>
-                            </Border>
+                                           FontSize="16"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,8"/>
 
-                            <!-- Metadata Tags (DLC & Category) -->
-                            <UniformGrid Columns="2" Margin="0,0,0,12">
-                                <Border Background="#1B1F2B" BorderBrush="#2A3042" BorderThickness="1" CornerRadius="5" Padding="10,7" Margin="0,0,5,0">
+                                <!-- Lock / Unlock Status Pill -->
+                                <Border x:Name="DetailStatusBorder"
+                                        Background="#1A4231"
+                                        CornerRadius="4"
+                                        Padding="12,3"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,0,0,12">
+                                    <TextBlock x:Name="TxtDetailStatus"
+                                               Text="✓ UNLOCKED IN SAVE"
+                                               Foreground="#E8ECF4"
+                                               FontWeight="Bold"
+                                               FontSize="10.5"/>
+                                </Border>
+
+                                <!-- Metadata Tags (DLC & Category) -->
+                                <UniformGrid Columns="2" Margin="0,0,0,8">
+                                    <Border Background="#1B1F2B" BorderBrush="#2A3042" BorderThickness="1" CornerRadius="5" Padding="10,6" Margin="0,0,4,0">
+                                        <StackPanel>
+                                            <TextBlock x:Name="LblDetailDlc" Text="DLC PACK" Foreground="#7D8599" FontSize="9.5" FontWeight="Bold"/>
+                                            <TextBlock x:Name="TxtDetailDlc" Text="Rebirth" Foreground="#F2F4F8" FontSize="12.5" FontWeight="Bold" Margin="0,1,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="#1B1F2B" BorderBrush="#2A3042" BorderThickness="1" CornerRadius="5" Padding="10,6" Margin="4,0,0,0">
+                                        <StackPanel>
+                                            <TextBlock x:Name="LblDetailCategory" Text="CATEGORY" Foreground="#7D8599" FontSize="9.5" FontWeight="Bold"/>
+                                            <TextBlock x:Name="TxtDetailCategory" Text="Character" Foreground="#F2F4F8" FontSize="12.5" FontWeight="Bold" Margin="0,1,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
+
+                                <!-- Section 1: Achievement Description -->
+                                <Border Background="#1B1F2B"
+                                        BorderBrush="#2A3042"
+                                        BorderThickness="1"
+                                        CornerRadius="5"
+                                        Padding="10,8"
+                                        Margin="0,0,0,8">
                                     <StackPanel>
-                                        <TextBlock x:Name="LblDetailDlc" Text="DLC PACK" Foreground="#7D8599" FontSize="10" FontWeight="Bold"/>
-                                        <TextBlock x:Name="TxtDetailDlc" Text="Rebirth" Foreground="#F2F4F8" FontSize="13" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock x:Name="LblDetailDescSection"
+                                                   Text="📜 ACHIEVEMENT DESCRIPTION"
+                                                   Foreground="#E5B85C"
+                                                   FontWeight="Bold"
+                                                   FontSize="10.5"
+                                                   Margin="0,0,0,3"/>
+                                        <TextBlock x:Name="TxtDetailDescPrimary"
+                                                   Text="-"
+                                                   Foreground="#D8DCE8"
+                                                   FontWeight="Normal"
+                                                   FontSize="12"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="TxtDetailDescSecondary" Visibility="Collapsed"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Background="#1B1F2B" BorderBrush="#2A3042" BorderThickness="1" CornerRadius="5" Padding="10,7" Margin="5,0,0,0">
+
+                                <!-- Section 2: How to Unlock -->
+                                <Border Background="#1B1F2B"
+                                        BorderBrush="#2A3042"
+                                        BorderThickness="1"
+                                        CornerRadius="5"
+                                        Padding="10,8">
                                     <StackPanel>
-                                        <TextBlock x:Name="LblDetailCategory" Text="CATEGORY" Foreground="#7D8599" FontSize="10" FontWeight="Bold"/>
-                                        <TextBlock x:Name="TxtDetailCategory" Text="Character" Foreground="#F2F4F8" FontSize="13" FontWeight="Bold" Margin="0,2,0,0"/>
+                                        <TextBlock x:Name="LblDetailUnlockPrimary"
+                                                   Text="🗝️ HOW TO UNLOCK"
+                                                   Foreground="#E5B85C"
+                                                   FontWeight="Bold"
+                                                   FontSize="10.5"
+                                                   Margin="0,0,0,3"/>
+                                        <TextBlock x:Name="TxtDetailUnlockPrimary"
+                                                   Text="-"
+                                                   Foreground="#F2F4F8"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12.5"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="LblDetailUnlockSecondary" Visibility="Collapsed"/>
+                                        <TextBlock x:Name="TxtDetailUnlockSecondary" Visibility="Collapsed"/>
                                     </StackPanel>
                                 </Border>
-                            </UniformGrid>
+                            </StackPanel>
 
-                            <!-- Section 1: Achievement Description -->
-                            <Border Background="#1B1F2B"
-                                    BorderBrush="#2A3042"
+                            <!-- BOTTOM: SLEEK MILESTONE TROPHY CABINET (3x2 MEDAL GRID) -->
+                            <Border Grid.Row="1"
+                                    Background="#11141C"
+                                    BorderBrush="#282E40"
                                     BorderThickness="1"
-                                    CornerRadius="5"
-                                    Padding="12,10"
-                                    Margin="0,0,0,12">
+                                    CornerRadius="6"
+                                    Padding="10,8"
+                                    Margin="0,10,0,0">
                                 <StackPanel>
-                                    <TextBlock x:Name="LblDetailDescSection"
-                                               Text="📜 ACHIEVEMENT DESCRIPTION"
-                                               Foreground="#E5B85C"
-                                               FontWeight="Bold"
-                                               FontSize="11"
-                                               Margin="0,0,0,5"/>
-                                    <TextBlock x:Name="TxtDetailDescPrimary"
-                                               Text="-"
-                                               Foreground="#D8DCE8"
-                                               FontWeight="Normal"
-                                               FontSize="12.5"
-                                               TextWrapping="Wrap"/>
-                                    <TextBlock x:Name="TxtDetailDescSecondary" Visibility="Collapsed"/>
+                                    <DockPanel Margin="2,0,2,6">
+                                        <TextBlock x:Name="LblMilestonesTitle"
+                                                   Text="🏆 MILESTONE TROPHIES"
+                                                   Foreground="#E5B85C"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"/>
+                                        <Border Background="#1C202B" BorderBrush="#32384C" BorderThickness="1" CornerRadius="4" Padding="7,1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock x:Name="TxtMilestonesProgress"
+                                                       Text="3 / 11"
+                                                       Foreground="#D8DCE8"
+                                                       FontSize="10.5"
+                                                       FontWeight="SemiBold"/>
+                                        </Border>
+                                        <TextBlock x:Name="LblMilestonesHint" Visibility="Collapsed"/>
+                                    </DockPanel>
+
+                                    <ItemsControl x:Name="IcMilestones">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="3" Rows="2"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Click="MilestoneCard_Click"
+                                                        Tag="{Binding}"
+                                                        Margin="3"
+                                                        Cursor="Hand"
+                                                        ToolTip="{Binding DisplayUnlockBy}">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border x:Name="msBorder"
+                                                                    Background="{Binding CardBackgroundBrush}"
+                                                                    BorderBrush="{Binding CardBorderBrush}"
+                                                                    BorderThickness="1"
+                                                                    CornerRadius="5"
+                                                                    Padding="6,6">
+                                                                <StackPanel HorizontalAlignment="Center">
+                                                                    <!-- Centered 34x34 Trophy Icon -->
+                                                                    <Border Width="34" Height="34"
+                                                                            Background="#0B0D12"
+                                                                            BorderBrush="#343B52"
+                                                                            BorderThickness="1"
+                                                                            CornerRadius="4"
+                                                                            HorizontalAlignment="Center"
+                                                                            Margin="0,0,0,4">
+                                                                        <Grid>
+                                                                            <Image Source="{Binding IconSource}"
+                                                                                   Stretch="UniformToFill"
+                                                                                   Opacity="{Binding ImageOpacity}"
+                                                                                   RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                                                                            <Grid Visibility="{Binding LockOverlayVisibility}" Background="#55000000">
+                                                                                <Border Width="16" Height="16"
+                                                                                        Background="#D912151E"
+                                                                                        BorderBrush="#E5B85C"
+                                                                                        BorderThickness="1"
+                                                                                        CornerRadius="8"
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center">
+                                                                                    <Canvas Width="10" Height="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                                        <Path Data="M 3,4.5 L 3,3 C 3,1.5 7,1.5 7,3 L 7,4.5"
+                                                                                              Stroke="#F0C775"
+                                                                                              StrokeThickness="1.3"
+                                                                                              Fill="Transparent"/>
+                                                                                        <Rectangle Canvas.Left="2" Canvas.Top="4.2"
+                                                                                                   Width="6" Height="4.5"
+                                                                                                   RadiusX="1" RadiusY="1"
+                                                                                                   Fill="#E5B85C"/>
+                                                                                    </Canvas>
+                                                                                </Border>
+                                                                            </Grid>
+
+                                                                            <Border Visibility="{Binding UnlockedBadgeVisibility}"
+                                                                                    Background="#D9153828"
+                                                                                    BorderBrush="#34D399"
+                                                                                    BorderThickness="1"
+                                                                                    CornerRadius="2"
+                                                                                    Padding="2,0"
+                                                                                    HorizontalAlignment="Right"
+                                                                                    VerticalAlignment="Bottom"
+                                                                                    Margin="1">
+                                                                                <TextBlock Text="✓" Foreground="#6EE7B7" FontSize="7.5" FontWeight="Bold"/>
+                                                                            </Border>
+                                                                        </Grid>
+                                                                    </Border>
+
+                                                                    <!-- Centered Milestone Title -->
+                                                                    <TextBlock Text="{Binding ShortMilestoneTitle}"
+                                                                               Foreground="#F2F4F8"
+                                                                               FontWeight="SemiBold"
+                                                                               FontSize="10"
+                                                                               TextAlignment="Center"
+                                                                               TextTrimming="CharacterEllipsis"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="msBorder" Property="BorderBrush" Value="#E5B85C"/>
+                                                                    <Setter TargetName="msBorder" Property="Background" Value="#252B3B"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </Border>
-
-                            <!-- Section 2: How to Unlock -->
-                            <Border Background="#1B1F2B"
-                                    BorderBrush="#2A3042"
-                                    BorderThickness="1"
-                                    CornerRadius="5"
-                                    Padding="12,10">
-                                <StackPanel>
-                                    <TextBlock x:Name="LblDetailUnlockPrimary"
-                                               Text="🗝️ HOW TO UNLOCK"
-                                               Foreground="#E5B85C"
-                                               FontWeight="Bold"
-                                               FontSize="11"
-                                               Margin="0,0,0,5"/>
-                                    <TextBlock x:Name="TxtDetailUnlockPrimary"
-                                               Text="-"
-                                               Foreground="#F2F4F8"
-                                               FontWeight="SemiBold"
-                                               FontSize="13"
-                                               TextWrapping="Wrap"/>
-                                    <TextBlock x:Name="LblDetailUnlockSecondary" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="TxtDetailUnlockSecondary" Visibility="Collapsed"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
+                        </Grid>
                     </Border>
                 </Grid>
 
