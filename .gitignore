@@ -1,0 +1,11 @@
+# Build intermediate directories
+obj/
+bin/
+*.pdb
+*.user
+*.suo
+.vs/
+
+mscorlib.dll
+*.nlp
+tr/
