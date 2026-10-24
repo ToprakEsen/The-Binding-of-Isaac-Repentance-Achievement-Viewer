@@ -1,37 +1,56 @@
-# The Binding of Isaac: Repentance+ — Başarım & Sır Günlüğü (Achievement Viewer)
+<div align="center">
 
-![Uygulama Ekran Görüntüsü](Assets/screenshot.png)
+# 🩸 The Binding of Isaac: Repentance+ — Achievement & Secret Viewer
 
-**The Binding of Isaac: Repentance+** için geliştirilmiş, `.NET (WPF)` tabanlı, oyunun karanlık mahzen ve parşömen temasına sadık, **%100 Salt Okunur (Read-Only)** başarım ve kayıt dosyası görüntüleme uygulaması.
+### 🌐 Choose Language / Dil Seçimi
 
----
+[![English](https://img.shields.io/badge/🇬🇧_Language-English_(Active)-b83228?style=for-the-badge)](README.md)
+[![Türkçe](https://img.shields.io/badge/🇹🇷_Dil-Türkçe_(Tıkla)-2b1d16?style=for-the-badge)](README.tr.md)
 
-## ✨ Özellikler (Features)
-
-- **🔒 %100 Salt Okunur (Read-Only) Koruma:**
-  - Kayıt dosyalarını işletim sistemi düzeyinde yalnızca `FileAccess.Read` ve `FileShare.ReadWrite` izinleriyle açar.
-  - Kayıt dosyalarını **kesinlikle düzenlemez, üzerine yazmaz** ve oyun açıkken oyunun kayıt almasını engellemez.
-- **📂 Otomatik Save Algılama & Canlı Senkronizasyon:**
-  - Steam Cloud (`Steam\userdata\<id>\250900\remote\rep+persistentgamedata1..3.dat`) ve `Belgelerim\My Games\Binding of Isaac Repentance+` klasörlerindeki 3 kayıt yuvasını (`Slot 1`, `Slot 2`, `Slot 3`) otomatik bulur.
-  - Siz oyunu oynarken yeni bir başarım açtığınızda `FileSystemWatcher` ile anında canlı olarak güncellenir.
-- **🏆 641 Resmi Başarım & Oyun İçi Görseller:**
-  - *Rebirth (1–178)*, *Afterbirth (179–276)*, *Afterbirth+ (277–403)*, *Repentance (404–637)* ve *Repentance+ (638–641)* dahil tüm **641 başarımın** orijinal piksel-art görsellerini içerir.
-  - Kilitli olan başarımların görselleri üzerinde özel **kilit ve zincir simgesi katmanı** bulunur.
-- **📜 Türkçe & İngilizce Rehber ("Nasıl Açılır?"):**
-  - Her başarımın oyun içi açıklaması ve nasıl açılacağını anlatan detaylı Türkçe/İngilizce koşul rehberi sağdaki *"SECRET FOUND!"* parşömen kağıdında gösterilir.
-- **🎨 Özel Isaac Temalı Arayüz & Başlık Çubuğu:**
-  - Kendine özel açma/kapama/küçültme barı, özel mahzen/bronz kaydırma çubuğu (ScrollBar) ve kategori/DLC filtreleri.
+<p>
+  <a href="README.md"><b>🇬🇧 English</b></a> •
+  <a href="README.tr.md"><b>🇹🇷 Türkçe</b></a>
+</p>
 
 ---
 
-## 🚀 Kurulum ve Çalıştırma (How to Run)
+![Application Screenshot](Assets/screenshot.png)
 
-### 1. Doğrudan Çalıştırma (Hazır `.exe`)
-1. Bu depoyu indirin (veya **Releases** kısmından `.zip` paketini indirin).
-2. `IsaacRepentancePlusAchievements.exe` dosyasını çalıştırın (`Data` ve `Assets` klasörleri `.exe` ile aynı dizinde bulunmalıdır).
+**A strictly Read-Only Achievement & Save File Viewer for *The Binding of Isaac: Repentance+*, built with .NET (WPF) and styled after the game's dark cellar & pinned parchment aesthetic.**
 
-### 2. Kaynak Koddan Derleme (Build from Source)
-Windows üzerinde harici bir kurulum gerektirmeden yerleşik `.NET Framework MSBuild` ile derleyebilirsiniz:
+</div>
+
+---
+
+## ✨ Key Features
+
+- 🔒 **100% Strictly Read-Only Save Protection:**
+  - Opens save files exclusively at the OS kernel level using `FileMode.Open`, `FileAccess.Read`, and `FileShare.ReadWrite`.
+  - **Cannot modify, overwrite, or corrupt** your save files under any circumstances, and never locks the file while the game is running.
+- 📂 **Automatic Save Detection & Real-Time Sync:**
+  - Automatically scans and loads all 3 save slots (`Slot 1`, `Slot 2`, `Slot 3`) from Steam Cloud (`Steam\userdata\<id>\250900\remote\rep+persistentgamedata1..3.dat`) and `Documents\My Games\Binding of Isaac Repentance+`.
+  - Uses a live `FileSystemWatcher` to automatically update your unlocked achievements in real time while you play.
+- 🏆 **All 641 Official Achievements & Game Artwork:**
+  - Covers every DLC era: *Rebirth (1–178)*, *Afterbirth (179–276)*, *Afterbirth+ (277–403)*, *Repentance (404–637)*, and *Repentance+ (638–641)* (including Online & *Item Descriptions* achievements).
+  - Uses the official pixel-art achievement icons from the game.
+  - Displays a custom **padlock & chain overlay** directly on top of locked achievement icons.
+- 📜 **Detailed Unlock Guide ("SECRET FOUND!" Parchment Panel):**
+  - Displays the in-game quote and clear **How to Unlock** conditions (in both English and Turkish) on a pinned parchment note inspired by the in-game secret screen.
+- 📊 **Live In-Game Save Statistics:**
+  - Displays real-time counters from your save file: *Mom Kills, Deaths, Win Streak, Best Streak, Donation Machine Coins, Greed Machine Coins, Eden Tokens, Collectibles Seen,* and *Challenges Completed*.
+- 🎨 **Custom Isaac-Themed UI:**
+  - Custom borderless title bar (drag, minimize, maximize, close), custom dark cellar & aged-bronze scrollbar, and instant search/filter by Unlock Status, DLC, Category, or `#ID`.
+
+---
+
+## 🚀 Getting Started
+
+### Option 1: Direct Run (Pre-built Executable)
+1. Clone or download this repository.
+2. Run `IsaacRepentancePlusAchievements.exe` directly (make sure the `Data` and `Assets` folders remain in the same directory as the `.exe`).
+
+### Option 2: Build from Source
+You can compile the project on any Windows PC using the built-in `.NET Framework MSBuild` without installing external dependencies:
 
 ```powershell
 & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe" "IsaacRepentancePlusAchievements.csproj" /p:Configuration=Release
@@ -39,11 +58,13 @@ Windows üzerinde harici bir kurulum gerektirmeden yerleşik `.NET Framework MSB
 
 ---
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
-- `MainWindow.xaml` / `MainWindow.xaml.cs` — Özel başlık çubuğu, mahzen/parşömen arayüzü ve filtreleme mantığı
-- `App.xaml` — Özel Isaac temalı `ScrollBar` ve `ComboBox` şablonları
-- `Services/ReadOnlySaveReader.cs` — Salt okunur (`FileAccess.Read`) Steam Cloud & yerel kayıt dosyası okuyucu
-- `Models/` — `AchievementItem` ve `SaveSlotData` veri modelleri
-- `Data/achievements.json` — 641 başarımın Türkçe ve İngilizce açıklama/kilit açma veritabanı
-- `Assets/Achievements/` — 641 başarımın orijinal oyun içi ikonları
+| File / Folder | Description |
+| :--- | :--- |
+| `MainWindow.xaml` / `.cs` | Custom borderless title bar, cellar/parchment UI layout, search & filtering |
+| `App.xaml` | Custom Isaac-themed `ScrollBar` and `ComboBox` control templates |
+| `Services/ReadOnlySaveReader.cs` | Strictly read-only (`FileAccess.Read`) binary parser for `ISAACNGSAVE09R` `.dat` files |
+| `Models/` | `AchievementItem` and `SaveSlotData` data models |
+| `Data/achievements.json` | Complete database of all 641 achievements with EN & TR descriptions and unlock guides |
+| `Assets/Achievements/` | Official pixel-art icons (`1.jpg` – `641.jpg`) for all 641 achievements |
