@@ -37,6 +37,8 @@ namespace IsaacRepentancePlusAchievements.Models
         public string IconFullPath { get; set; }
         public string SteamIconUrl { get; set; }
         public bool Hidden { get; set; }
+        public bool IsMilestone { get; set; }
+        public string ShortMilestoneTitle { get; set; }
 
         public string DisplayId
         {
@@ -73,6 +75,7 @@ namespace IsaacRepentancePlusAchievements.Models
             OnPropertyChanged("DisplayUnlockBy");
             OnPropertyChanged("DisplayCategory");
             OnPropertyChanged("StatusText");
+            OnPropertyChanged("MilestoneStatusText");
             OnPropertyChanged("StatusDetailText");
             OnPropertyChanged("SecretBannerTitle");
         }
@@ -145,6 +148,8 @@ namespace IsaacRepentancePlusAchievements.Models
                     OnPropertyChanged("LockOverlayVisibility");
                     OnPropertyChanged("UnlockedBadgeVisibility");
                     OnPropertyChanged("StatusText");
+                    OnPropertyChanged("MilestoneStatusText");
+                    OnPropertyChanged("MilestoneStatusForeground");
                     OnPropertyChanged("StatusDetailText");
                     OnPropertyChanged("ImageOpacity");
                     OnPropertyChanged("CardBorderBrush");
@@ -174,6 +179,30 @@ namespace IsaacRepentancePlusAchievements.Models
                     return _isUnlocked ? "AÇIK" : "KİLİTLİ";
                 }
                 return _isUnlocked ? "UNLOCKED" : "LOCKED";
+            }
+        }
+
+        public string MilestoneStatusText
+        {
+            get
+            {
+                if (_isTurkish)
+                {
+                    return _isUnlocked ? "✓ AÇIK" : "🔒 KİLİTLİ";
+                }
+                return _isUnlocked ? "✓ UNLOCKED" : "🔒 LOCKED";
+            }
+        }
+
+        public Brush MilestoneStatusForeground
+        {
+            get
+            {
+                if (_isUnlocked)
+                {
+                    return new SolidColorBrush(Color.FromRgb(126, 224, 117)); // Bright Emerald
+                }
+                return new SolidColorBrush(Color.FromRgb(214, 105, 105)); // Soft Crimson
             }
         }
 

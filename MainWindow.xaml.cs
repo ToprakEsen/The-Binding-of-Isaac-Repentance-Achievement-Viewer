@@ -20,13 +20,45 @@ namespace IsaacRepentancePlusAchievements
     public partial class MainWindow : Window
     {
         private readonly List<AchievementItem> _allAchievements = new List<AchievementItem>();
+        private readonly List<AchievementItem> _milestoneAchievements = new List<AchievementItem>();
         private List<SaveSlotData> _saveSlots = new List<SaveSlotData>();
         private int _activeSlotIndex = 0; // 0 = Slot 1, 1 = Slot 2, 2 = Slot 3
-        private string _statusFilter = "ALL"; // ALL, UNLOCKED, LOCKED
+        private string _statusFilter = "ALL"; // ALL, UNLOCKED, LOCKED, MILESTONES
         private bool _isTurkish = false; // Default language: English (false)
         private FileSystemWatcher _saveWatcher;
         private DispatcherTimer _watcherDebounceTimer;
         private bool _isInitialized = false;
+
+        // Ordered progression of 11 iconic Binding of Isaac milestones
+        private static readonly int[] MilestoneOrderIds = new int[]
+        {
+            34,  // It Lives!
+            407, // A Secret Exit
+            635, // A Strange Door
+            69,  // !Platinum God!
+            84,  // The Real Platinum God
+            156, // Godhead
+            235, // 1001%
+            339, // 1000000%
+            547, // Mega Mush
+            636, // Death Certificate
+            637  // Dead God
+        };
+
+        private static readonly Dictionary<int, string> MilestoneShortNames = new Dictionary<int, string>
+        {
+            { 34,  "It Lives!" },
+            { 407, "Secret Exit" },
+            { 635, "Strange Door" },
+            { 69,  "Platinum God" },
+            { 84,  "Real Plat. God" },
+            { 156, "Godhead" },
+            { 235, "1001%" },
+            { 339, "1000000%" },
+            { 547, "Mega Mush" },
+            { 636, "Death Cert." },
+            { 637, "Dead God" }
+        };
 
         // Canonical Turkish category names stored in achievements.json by index (1..9)
         private static readonly string[] CategoryKeysByIndex = new string[]
@@ -145,7 +177,15 @@ namespace IsaacRepentancePlusAchievements
             LblStatEden.Text = _isTurkish ? "EDEN TOKEN" : "EDEN TOKENS";
             LblStatItemsChallenges.Text = _isTurkish ? "EŞYA / CHALLENGE" : "ITEMS / CHALLENGES";
 
-            // 4. Update Search & Filter Controls
+            // 4. Update Milestones Bar Headers
+            LblMilestonesTitle.Text = _isTurkish
+                ? "🏆 ÖNEMLİ KİLOMETRE TAŞLARI (PLATINUM GOD • 1000000% • DEAD GOD)"
+                : "🏆 MAJOR GAME MILESTONES (PLATINUM GOD • 1000000% • DEAD GOD)";
+            LblMilestonesHint.Text = _isTurkish
+                ? "Detaylarını ve nasıl açıldığını görmek için herhangi bir kilometre taşına tıklayın →"
+                : "Click any milestone trophy to inspect its unlock guide →";
+
+            // 5. Update Search & Filter Controls
             TxtSearchPlaceholder.Text = _isTurkish
                 ? "Başarım adı, #ID (örn: 641) veya açıklama ara..."
                 : "Search achievement name, #ID (e.g. 641) or guide...";
@@ -162,7 +202,7 @@ namespace IsaacRepentancePlusAchievements
             CbiCatRepPlus.Content = "Repentance+ & Online";
             CbiCatSecret.Content = _isTurkish ? "Sır & Genel" : "Secret & Misc";
 
-            // 5. Update Detail Sheet Static Headers
+            // 6. Update Detail Sheet Static Headers
             LblDetailDlc.Text = _isTurkish ? "PAKET (DLC)" : "DLC PACK";
             LblDetailCategory.Text = _isTurkish ? "KATEGORİ" : "CATEGORY";
             LblDetailDescSection.Text = _isTurkish ? "📜 BAŞARIM HAKKINDA AÇIKLAMA" : "📜 ACHIEVEMENT DESCRIPTION";
@@ -172,13 +212,13 @@ namespace IsaacRepentancePlusAchievements
                 ? "The Binding of Isaac: Repentance+ Achievement Viewer (.NET WPF • Salt Okunur)"
                 : "The Binding of Isaac: Repentance+ Achievement Viewer (.NET WPF • Read-Only)";
 
-            // 6. Update each AchievementItem's language flag
+            // 7. Update each AchievementItem's language flag
             foreach (AchievementItem item in _allAchievements)
             {
                 item.IsTurkish = _isTurkish;
             }
 
-            // 7. Refresh slot summaries & active slot banner
+            // 8. Refresh slot summaries & active slot banner
             if (_saveSlots.Count >= 3)
             {
                 UpdateSlotButtonSummary(0, TxtSlot1Percent, TxtSlot1Count, TxtSlot1Rank);
@@ -210,6 +250,8 @@ namespace IsaacRepentancePlusAchievements
         private void LoadAchievementsCatalog()
         {
             _allAchievements.Clear();
+            _milestoneAchievements.Clear();
+
             string baseDir = GetAppBaseDir();
             string jsonPath = Path.Combine(baseDir, "Data", "achievements.json");
 
@@ -223,10 +265,15 @@ namespace IsaacRepentancePlusAchievements
             serializer.MaxJsonLength = int.MaxValue;
             List<AchievementJsonDto> dtos = serializer.Deserialize<List<AchievementJsonDto>>(jsonText);
 
+            Dictionary<int, AchievementItem> byId = new Dictionary<int, AchievementItem>();
+
             foreach (AchievementJsonDto dto in dtos.OrderBy(d => d.Id))
             {
                 string iconFullPath = Path.Combine(baseDir, dto.IconFile.Replace('/', '\\'));
                 ImageSource bmp = LoadIconBitmapSafe(iconFullPath);
+
+                string shortMsName;
+                bool isMs = MilestoneShortNames.TryGetValue(dto.Id, out shortMsName);
 
                 AchievementItem item = new AchievementItem
                 {
@@ -243,11 +290,25 @@ namespace IsaacRepentancePlusAchievements
                     Hidden = dto.Hidden,
                     IconSource = bmp,
                     IsTurkish = _isTurkish,
-                    IsUnlocked = false
+                    IsUnlocked = false,
+                    IsMilestone = isMs,
+                    ShortMilestoneTitle = isMs ? shortMsName : (dto.Name ?? "")
                 };
 
                 _allAchievements.Add(item);
+                byId[item.Id] = item;
             }
+
+            foreach (int msId in MilestoneOrderIds)
+            {
+                AchievementItem msItem;
+                if (byId.TryGetValue(msId, out msItem))
+                {
+                    _milestoneAchievements.Add(msItem);
+                }
+            }
+
+            IcMilestones.ItemsSource = _milestoneAchievements;
         }
 
         private ImageSource LoadIconBitmapSafe(string path)
@@ -332,6 +393,12 @@ namespace IsaacRepentancePlusAchievements
                 ach.IsUnlocked = active.Exists && active.UnlockedAchievementIds.Contains(ach.Id);
             }
 
+            // Update Milestone unlocked counter
+            int unlockedMilestones = _milestoneAchievements.Count(m => m.IsUnlocked);
+            TxtMilestonesProgress.Text = _isTurkish
+                ? string.Format("{0} / {1} Açık", unlockedMilestones, _milestoneAchievements.Count)
+                : string.Format("{0} / {1} Unlocked", unlockedMilestones, _milestoneAchievements.Count);
+
             string rankUpper = active.GetRankTitle(_isTurkish).ToUpperInvariant();
             if (_isTurkish)
             {
@@ -393,12 +460,14 @@ namespace IsaacRepentancePlusAchievements
                 BtnFilterAll.Content = string.Format("Tümü ({0})", _allAchievements.Count);
                 BtnFilterUnlocked.Content = string.Format("✓ Açılanlar ({0})", active.UnlockedCount);
                 BtnFilterLocked.Content = string.Format("🔒 Kilitliler ({0})", active.LockedCount);
+                BtnFilterMilestones.Content = string.Format("🏆 Kilometre Taşları ({0}/{1})", unlockedMilestones, _milestoneAchievements.Count);
             }
             else
             {
                 BtnFilterAll.Content = string.Format("All ({0})", _allAchievements.Count);
                 BtnFilterUnlocked.Content = string.Format("✓ Unlocked ({0})", active.UnlockedCount);
                 BtnFilterLocked.Content = string.Format("🔒 Locked ({0})", active.LockedCount);
+                BtnFilterMilestones.Content = string.Format("🏆 Milestones ({0}/{1})", unlockedMilestones, _milestoneAchievements.Count);
             }
             UpdateStatusFilterButtonStyles();
 
@@ -432,6 +501,7 @@ namespace IsaacRepentancePlusAchievements
             SetFilterBtnHighlight(BtnFilterAll, _statusFilter == "ALL");
             SetFilterBtnHighlight(BtnFilterUnlocked, _statusFilter == "UNLOCKED");
             SetFilterBtnHighlight(BtnFilterLocked, _statusFilter == "LOCKED");
+            SetFilterBtnHighlight(BtnFilterMilestones, _statusFilter == "MILESTONES");
         }
 
         private void SetFilterBtnHighlight(Button btn, bool active)
@@ -471,6 +541,10 @@ namespace IsaacRepentancePlusAchievements
             else if (_statusFilter == "LOCKED")
             {
                 filtered = filtered.Where(a => !a.IsUnlocked);
+            }
+            else if (_statusFilter == "MILESTONES")
+            {
+                filtered = _milestoneAchievements;
             }
 
             // 2. DLC filter
@@ -515,6 +589,25 @@ namespace IsaacRepentancePlusAchievements
             else if (resultList.Count > 0)
             {
                 LstAchievements.SelectedIndex = 0;
+            }
+        }
+
+        private void MilestoneCard_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn == null) return;
+
+            AchievementItem item = btn.Tag as AchievementItem;
+            if (item == null) return;
+
+            UpdateDetailPanel(item);
+
+            // Also select and scroll to the milestone in the main list if visible
+            List<AchievementItem> currentItems = LstAchievements.ItemsSource as List<AchievementItem>;
+            if (currentItems != null && currentItems.Contains(item))
+            {
+                LstAchievements.SelectedItem = item;
+                LstAchievements.ScrollIntoView(item);
             }
         }
 
@@ -735,6 +828,13 @@ namespace IsaacRepentancePlusAchievements
         private void BtnFilterLocked_Click(object sender, RoutedEventArgs e)
         {
             _statusFilter = "LOCKED";
+            UpdateStatusFilterButtonStyles();
+            ApplyFilters();
+        }
+
+        private void BtnFilterMilestones_Click(object sender, RoutedEventArgs e)
+        {
+            _statusFilter = "MILESTONES";
             UpdateStatusFilterButtonStyles();
             ApplyFilters();
         }
