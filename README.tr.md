@@ -50,7 +50,7 @@ Depoyu klonlamanıza veya yanına `Data` / `Assets` klasörleri koymanıza gerek
 | İndirme Seçeneği | Boyut | Açıklama |
 | :--- | :---: | :--- |
 | [**`IsaacAchievementViewer-v1.3.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Standalone.exe) | ~70 MB | **`.NET` kurulumu gerektirmez.** `.NET 8` çalışma zamanı ve 641 başarım görseli tek bir `.exe` içine gömülüdür; her bilgisayarda doğrudan çalışır. |
-| [**`IsaacAchievementViewer-v1.3.0-Duz.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Duz.exe) | ~2 MB | **Hafif sürüm.** Windows'ta yerleşik bulunan `.NET Framework 4.8` altyapısını kullanır; 641 başarım görseli ve veritabanı yine tek `.exe` içine gömülüdür. |
+| [**`IsaacAchievementViewer-v1.3.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Non-Standalone.exe) | ~2 MB | **Hafif sürüm (Non-Standalone).** Windows'ta yerleşik bulunan `.NET Framework 4.8` altyapısını kullanır; 641 başarım görseli ve veritabanı yine tek `.exe` içine gömülüdür. |
 
 ### Seçenek 2: Kaynak Koddan Derleme
 Projeyi kaynak koddan derlemek isterseniz Windows üzerindeki yerleşik `.NET Framework MSBuild` ile derleyebilirsiniz:

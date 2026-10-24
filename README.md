@@ -51,7 +51,7 @@ You don't need to clone the repository or keep external `Data`/`Assets` folders 
 | Download Package | Size | Description |
 | :--- | :---: | :--- |
 | [**`IsaacAchievementViewer-v1.3.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Standalone.exe) | ~70 MB | **No `.NET` required.** Fully self-contained single-file executable with the .NET 8 runtime and all 641 achievement icons embedded inside. |
-| [**`IsaacAchievementViewer-v1.3.0-Duz.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Duz.exe) | ~2 MB | **Lightweight version.** Uses Windows' built-in `.NET Framework 4.8` with all 641 achievement icons and database embedded inside a single `.exe`. |
+| [**`IsaacAchievementViewer-v1.3.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Non-Standalone.exe) | ~2 MB | **Lightweight version (Non-Standalone).** Uses Windows' built-in `.NET Framework 4.8` with all 641 achievement icons and database embedded inside a single `.exe`. |
 
 ### Option 2: Build from Source
 If you want to compile the project from source on Windows using the built-in `.NET Framework MSBuild`:
