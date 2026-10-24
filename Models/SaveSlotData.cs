@@ -48,9 +48,9 @@ namespace IsaacRepentancePlusAchievements.Models
         public int CollectiblesSeen { get; set; }
         public int ChallengesCompleted { get; set; }
 
-        public string RankTitle
+        public string GetRankTitle(bool isTurkish)
         {
-            get
+            if (isTurkish)
             {
                 if (!Exists) return "Kayıt Bulunamadı";
                 if (UnlockedCount >= 637) return "DEAD GOD!";
@@ -61,6 +61,18 @@ namespace IsaacRepentancePlusAchievements.Models
                 if (UnlockedCount >= 25) return "Mahzen Maceracısı";
                 if (UnlockedCount > 0) return "Yeni Başlangıç";
                 return "Boş Kayıt (0 Sır)";
+            }
+            else
+            {
+                if (!Exists) return "Save Not Found";
+                if (UnlockedCount >= 637) return "DEAD GOD!";
+                if (UnlockedCount >= 500) return "The Beast Hunter";
+                if (UnlockedCount >= 350) return "Mother Slayer";
+                if (UnlockedCount >= 200) return "Alt Path Explorer";
+                if (UnlockedCount >= 100) return "It Lives! Conqueror";
+                if (UnlockedCount >= 25) return "Basement Adventurer";
+                if (UnlockedCount > 0) return "Fresh Start";
+                return "Empty Save (0 Secrets)";
             }
         }
 

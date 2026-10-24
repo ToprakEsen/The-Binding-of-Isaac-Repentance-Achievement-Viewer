@@ -14,7 +14,7 @@
 
 ---
 
-![Uygulama Ekran Görüntüsü](Assets/screenshot.png)
+![Uygulama Ekran Görüntüsü](Assets/screenshot_tr.png)
 
 **The Binding of Isaac: Repentance+ için geliştirilmiş, `.NET (WPF)` tabanlı, oyunun karanlık mahzen ve parşömen temasına sadık, %100 Salt Okunur (Read-Only) başarım ve kayıt dosyası görüntüleme uygulaması.**
 

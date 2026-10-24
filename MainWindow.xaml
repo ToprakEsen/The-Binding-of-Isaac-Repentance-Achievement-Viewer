@@ -1,7 +1,7 @@
 ﻿<Window x:Class="IsaacRepentancePlusAchievements.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="The Binding of Isaac: Repentance+ - Başarım Günlüğü"
+        Title="The Binding of Isaac: Repentance+ - Achievement Viewer"
         Width="1380" Height="860"
         MinWidth="1060" MinHeight="680"
         WindowStartupLocation="CenterScreen"
@@ -142,8 +142,9 @@
     <Border x:Name="OuterWindowBorder"
             Background="#140F0D"
             BorderBrush="#593A2B"
-            BorderThickness="2">
-        <Border BorderBrush="#261813" BorderThickness="2">
+            BorderThickness="2"
+            CornerRadius="6">
+        <Border BorderBrush="#261813" BorderThickness="2" CornerRadius="4">
             <Grid>
                 <Grid.RowDefinitions>
                     <!-- Row 0: Custom Isaac Title Bar -->
@@ -158,7 +159,7 @@
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
 
-                <!-- ==================== ROW 0: CUSTOM TITLE BAR (KENDİNE ÖZEL AÇMA/KAPAMA BARI) ==================== -->
+                <!-- ==================== ROW 0: CUSTOM TITLE BAR ==================== -->
                 <Border Grid.Row="0"
                         Background="#0E0A08"
                         BorderBrush="#4A251D"
@@ -192,10 +193,11 @@
                                                FontWeight="Bold"
                                                VerticalAlignment="Center"/>
                                     <Border Background="#7A1C1C" BorderBrush="#B83737" BorderThickness="1" CornerRadius="3" Padding="7,1" Margin="8,0,0,0">
-                                        <TextBlock Text="BAŞARIM GÜNLÜĞÜ" Foreground="#FFF0DB" FontSize="10" FontWeight="Bold"/>
+                                        <TextBlock x:Name="TxtTitleBadge" Text="ACHIEVEMENT VIEWER" Foreground="#FFF0DB" FontSize="10" FontWeight="Bold"/>
                                     </Border>
                                 </StackPanel>
-                                <TextBlock Text="Otomatik Save Okuyucu • 641 Resmi Başarım • Türkçe ve İngilizce Açıklamalar"
+                                <TextBlock x:Name="TxtTitleSubtitle"
+                                           Text="Auto Save Reader • 641 Official Achievements • Unlock Guide"
                                            Foreground="#A89076"
                                            FontSize="11"/>
                             </StackPanel>
@@ -215,7 +217,8 @@
                                       Fill="#6CC464"
                                       VerticalAlignment="Center"
                                       Margin="0,0,7,0"/>
-                                <TextBlock Text="SALT OKUNUR (READ-ONLY) MOD AKTİF — SAVE DOSYASI DÜZENLENEMEZ"
+                                <TextBlock x:Name="TxtReadOnlyShield"
+                                           Text="READ-ONLY MODE ACTIVE — SAVE FILE CANNOT BE MODIFIED"
                                            Foreground="#B4E8AE"
                                            FontSize="11"
                                            FontWeight="SemiBold"
@@ -223,22 +226,73 @@
                             </StackPanel>
                         </Border>
 
-                        <!-- Right: Action Buttons & Custom Minimize / Maximize / Close Bar -->
+                        <!-- Right: Language Flag Emoji Switcher + Action Buttons + Window Controls -->
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+
+                            <!-- TOP-RIGHT LANGUAGE SWITCHER BUTTON WITH FLAG EMOJI -->
+                            <Button x:Name="BtnLanguageToggle"
+                                    Style="{StaticResource TitleBarButtonStyle}"
+                                    Click="BtnLanguageToggle_Click"
+                                    Margin="0,0,8,0"
+                                    Height="28"
+                                    ToolTip="Switch Language / Dili Değiştir (English ↔ Türkçe)">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- Crisp Flag Emoji Graphic (UK / TR) -->
+                                    <Border Width="20" Height="14" CornerRadius="2" BorderBrush="#6E523F" BorderThickness="1" Margin="0,0,6,0" ClipToBounds="True">
+                                        <Grid>
+                                            <!-- UK Flag (🇬🇧 English) -->
+                                            <Canvas x:Name="FlagUkCanvas" Width="20" Height="14" Background="#012169" Visibility="Visible">
+                                                <!-- White diagonals -->
+                                                <Line X1="0" Y1="0" X2="20" Y2="14" Stroke="#FFFFFF" StrokeThickness="2.6"/>
+                                                <Line X1="20" Y1="0" X2="0" Y2="14" Stroke="#FFFFFF" StrokeThickness="2.6"/>
+                                                <!-- Red diagonals -->
+                                                <Line X1="0" Y1="0" X2="20" Y2="14" Stroke="#C8102E" StrokeThickness="1.2"/>
+                                                <Line X1="20" Y1="0" X2="0" Y2="14" Stroke="#C8102E" StrokeThickness="1.2"/>
+                                                <!-- White cross -->
+                                                <Rectangle Canvas.Left="8" Canvas.Top="0" Width="4" Height="14" Fill="#FFFFFF"/>
+                                                <Rectangle Canvas.Left="0" Canvas.Top="5" Width="20" Height="4" Fill="#FFFFFF"/>
+                                                <!-- Red cross -->
+                                                <Rectangle Canvas.Left="8.8" Canvas.Top="0" Width="2.4" Height="14" Fill="#C8102E"/>
+                                                <Rectangle Canvas.Left="0" Canvas.Top="5.8" Width="20" Height="2.4" Fill="#C8102E"/>
+                                            </Canvas>
+
+                                            <!-- Turkish Flag (🇹🇷 Türkçe) -->
+                                            <Canvas x:Name="FlagTrCanvas" Width="20" Height="14" Background="#E30A17" Visibility="Collapsed">
+                                                <!-- White outer crescent -->
+                                                <Ellipse Canvas.Left="4.2" Canvas.Top="3" Width="8" Height="8" Fill="#FFFFFF"/>
+                                                <!-- Red inner cutout -->
+                                                <Ellipse Canvas.Left="5.8" Canvas.Top="3.8" Width="6.4" Height="6.4" Fill="#E30A17"/>
+                                                <!-- White Star -->
+                                                <Polygon Points="12.2,7 13.8,5.8 13.2,7.6 14.7,6.5 12.8,6.5" Fill="#FFFFFF"/>
+                                                <Ellipse Canvas.Left="12.5" Canvas.Top="5.8" Width="2.4" Height="2.4" Fill="#FFFFFF"/>
+                                            </Canvas>
+                                        </Grid>
+                                    </Border>
+                                    <TextBlock x:Name="TxtLanguageCode"
+                                               Text="EN"
+                                               Foreground="#FFF0D6"
+                                               FontSize="11.5"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
                             <Button x:Name="BtnRefreshSave"
                                     Style="{StaticResource TitleBarButtonStyle}"
                                     Click="BtnRefreshSave_Click"
                                     Margin="0,0,6,0"
-                                    ToolTip="Kayıt dosyasını yeniden oku (Salt Okunur)">
-                                <TextBlock Text="↻ Yenile" FontSize="11.5"/>
+                                    Height="28"
+                                    ToolTip="Reload save file (Read-Only)">
+                                <TextBlock x:Name="TxtBtnRefresh" Text="↻ Refresh" FontSize="11.5"/>
                             </Button>
 
                             <Button x:Name="BtnSelectSaveFile"
                                     Style="{StaticResource TitleBarButtonStyle}"
                                     Click="BtnSelectSaveFile_Click"
-                                    Margin="0,0,14,0"
-                                    ToolTip="Farklı bir .dat kayıt dosyası seç (Sadece okunur, değiştirilemez)">
-                                <TextBlock Text="📂 Save Seç" FontSize="11.5"/>
+                                    Margin="0,0,12,0"
+                                    Height="28"
+                                    ToolTip="Open another .dat save file (Read-Only)">
+                                <TextBlock x:Name="TxtBtnSelectSave" Text="📂 Open Save" FontSize="11.5"/>
                             </Button>
 
                             <!-- Minimize -->
@@ -247,7 +301,7 @@
                                     Width="34" Height="28"
                                     Margin="0,0,4,0"
                                     Click="BtnMinimize_Click"
-                                    ToolTip="Küçült">
+                                    ToolTip="Minimize">
                                 <TextBlock Text="—" FontWeight="Bold"/>
                             </Button>
 
@@ -257,7 +311,7 @@
                                     Width="34" Height="28"
                                     Margin="0,0,4,0"
                                     Click="BtnMaximize_Click"
-                                    ToolTip="Tam Ekran / Boyutu Geri Yükle">
+                                    ToolTip="Maximize / Restore">
                                 <TextBlock x:Name="TxtMaximizeIcon" Text="▢" FontWeight="Bold"/>
                             </Button>
 
@@ -266,7 +320,7 @@
                                     Style="{StaticResource CloseBarButtonStyle}"
                                     Width="38" Height="28"
                                     Click="BtnClose_Click"
-                                    ToolTip="Uygulamayı Kapat">
+                                    ToolTip="Close Application">
                                 <TextBlock Text="✕" FontWeight="Bold"/>
                             </Button>
                         </StackPanel>
@@ -299,11 +353,11 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="1. KAYIT" Foreground="#F2DFC4" FontWeight="Bold" FontSize="11.5"/>
-                                        <TextBlock Grid.Column="1" x:Name="TxtSlot1Percent" Text="%0" Foreground="#F0C265" FontFamily="Consolas, Segoe UI" FontWeight="Bold" FontSize="12"/>
+                                        <TextBlock x:Name="TxtSlot1Header" Grid.Column="0" Text="SAVE FILE 1" Foreground="#F2DFC4" FontWeight="Bold" FontSize="11.5"/>
+                                        <TextBlock Grid.Column="1" x:Name="TxtSlot1Percent" Text="0%" Foreground="#F0C265" FontFamily="Consolas, Segoe UI" FontWeight="Bold" FontSize="12"/>
                                     </Grid>
-                                    <TextBlock x:Name="TxtSlot1Count" Text="0 / 641 Sır" Foreground="#DFC9AA" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,2"/>
-                                    <TextBlock x:Name="TxtSlot1Rank" Text="Yükleniyor..." Foreground="#A68C72" FontSize="10.5"/>
+                                    <TextBlock x:Name="TxtSlot1Count" Text="0 / 641 Secrets" Foreground="#DFC9AA" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,2"/>
+                                    <TextBlock x:Name="TxtSlot1Rank" Text="Loading..." Foreground="#A68C72" FontSize="10.5"/>
                                 </StackPanel>
                             </Button>
 
@@ -315,11 +369,11 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="2. KAYIT" Foreground="#F2DFC4" FontWeight="Bold" FontSize="11.5"/>
-                                        <TextBlock Grid.Column="1" x:Name="TxtSlot2Percent" Text="%0" Foreground="#F0C265" FontFamily="Consolas, Segoe UI" FontWeight="Bold" FontSize="12"/>
+                                        <TextBlock x:Name="TxtSlot2Header" Grid.Column="0" Text="SAVE FILE 2" Foreground="#F2DFC4" FontWeight="Bold" FontSize="11.5"/>
+                                        <TextBlock Grid.Column="1" x:Name="TxtSlot2Percent" Text="0%" Foreground="#F0C265" FontFamily="Consolas, Segoe UI" FontWeight="Bold" FontSize="12"/>
                                     </Grid>
-                                    <TextBlock x:Name="TxtSlot2Count" Text="0 / 641 Sır" Foreground="#DFC9AA" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,2"/>
-                                    <TextBlock x:Name="TxtSlot2Rank" Text="Yükleniyor..." Foreground="#A68C72" FontSize="10.5"/>
+                                    <TextBlock x:Name="TxtSlot2Count" Text="0 / 641 Secrets" Foreground="#DFC9AA" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,2"/>
+                                    <TextBlock x:Name="TxtSlot2Rank" Text="Loading..." Foreground="#A68C72" FontSize="10.5"/>
                                 </StackPanel>
                             </Button>
 
@@ -331,11 +385,11 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="3. KAYIT" Foreground="#F2DFC4" FontWeight="Bold" FontSize="11.5"/>
-                                        <TextBlock Grid.Column="1" x:Name="TxtSlot3Percent" Text="%0" Foreground="#F0C265" FontFamily="Consolas, Segoe UI" FontWeight="Bold" FontSize="12"/>
+                                        <TextBlock x:Name="TxtSlot3Header" Grid.Column="0" Text="SAVE FILE 3" Foreground="#F2DFC4" FontWeight="Bold" FontSize="11.5"/>
+                                        <TextBlock Grid.Column="1" x:Name="TxtSlot3Percent" Text="0%" Foreground="#F0C265" FontFamily="Consolas, Segoe UI" FontWeight="Bold" FontSize="12"/>
                                     </Grid>
-                                    <TextBlock x:Name="TxtSlot3Count" Text="0 / 641 Sır" Foreground="#DFC9AA" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,2"/>
-                                    <TextBlock x:Name="TxtSlot3Rank" Text="Yükleniyor..." Foreground="#A68C72" FontSize="10.5"/>
+                                    <TextBlock x:Name="TxtSlot3Count" Text="0 / 641 Secrets" Foreground="#DFC9AA" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,2"/>
+                                    <TextBlock x:Name="TxtSlot3Rank" Text="Loading..." Foreground="#A68C72" FontSize="10.5"/>
                                 </StackPanel>
                             </Button>
                         </UniformGrid>
@@ -356,7 +410,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock x:Name="TxtActiveSlotHeader"
                                                Grid.Column="0"
-                                               Text="AKTİF KAYIT: 1. DOSYA"
+                                               Text="ACTIVE SAVE: FILE 1"
                                                Foreground="#F2E0C4"
                                                FontWeight="Bold"
                                                FontSize="11.5"
@@ -364,7 +418,7 @@
                                                Margin="0,0,8,0"/>
                                     <TextBlock x:Name="TxtProgressSummary"
                                                Grid.Column="1"
-                                               Text="228 Açık / 413 Kilitli (%35.6)"
+                                               Text="228 Unlocked / 413 Locked (35.6%)"
                                                Foreground="#F0C265"
                                                FontWeight="Bold"
                                                FontSize="11.5"
@@ -390,7 +444,7 @@
                                 </Grid>
 
                                 <TextBlock x:Name="TxtSaveFilePath"
-                                           Text="Save Yolu: Otomatik aranıyor..."
+                                           Text="Save Path: Auto-detecting..."
                                            Foreground="#A89076"
                                            FontSize="11"
                                            TextTrimming="CharacterEllipsis"
@@ -407,27 +461,27 @@
                                 Padding="10,6">
                             <UniformGrid Rows="2" Columns="3">
                                 <StackPanel Margin="4,1">
-                                    <TextBlock Text="MOM KILLS" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="LblStatMomKills" Text="MOM KILLS" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="TxtStatMomKills" Text="0" Foreground="#F5E4CA" FontFamily="Consolas, Segoe UI" FontSize="13.5" FontWeight="Bold"/>
                                 </StackPanel>
                                 <StackPanel Margin="4,1">
-                                    <TextBlock Text="ÖLÜM (DEATHS)" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="LblStatDeaths" Text="DEATHS" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="TxtStatDeaths" Text="0" Foreground="#EB7A7A" FontFamily="Consolas, Segoe UI" FontSize="13.5" FontWeight="Bold"/>
                                 </StackPanel>
                                 <StackPanel Margin="4,1">
-                                    <TextBlock Text="SERİ (EN İYİ)" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="LblStatStreak" Text="STREAK (BEST)" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="TxtStatStreak" Text="0 (0)" Foreground="#92DE87" FontFamily="Consolas, Segoe UI" FontSize="13" FontWeight="Bold"/>
                                 </StackPanel>
                                 <StackPanel Margin="4,1">
-                                    <TextBlock Text="BAĞIŞ / GREED" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="LblStatDonation" Text="DONATION / GREED" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="TxtStatDonation" Text="0¢ / 0¢" Foreground="#F0C869" FontFamily="Consolas, Segoe UI" FontSize="13" FontWeight="Bold"/>
                                 </StackPanel>
                                 <StackPanel Margin="4,1">
-                                    <TextBlock Text="EDEN TOKEN" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="LblStatEden" Text="EDEN TOKENS" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="TxtStatEden" Text="0" Foreground="#C4A6F0" FontFamily="Consolas, Segoe UI" FontSize="13.5" FontWeight="Bold"/>
                                 </StackPanel>
                                 <StackPanel Margin="4,1">
-                                    <TextBlock Text="EŞYA / CHALLENGE" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="LblStatItemsChallenges" Text="ITEMS / CHALLENGES" Foreground="#9C8268" FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="TxtStatItemsChallenges" Text="0 / 0" Foreground="#86CCE0" FontFamily="Consolas, Segoe UI" FontSize="13" FontWeight="Bold"/>
                                 </StackPanel>
                             </UniformGrid>
@@ -444,7 +498,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <!-- Search Box -->
-                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="310"/>
                             <!-- Unlock Status Filter Buttons -->
                             <ColumnDefinition Width="Auto"/>
                             <!-- DLC Filter ComboBox -->
@@ -471,7 +525,7 @@
                                 <TextBlock Grid.Column="0" Text="🔍" Foreground="#9C826B" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <TextBlock x:Name="TxtSearchPlaceholder"
                                            Grid.Column="1"
-                                           Text="Başarım adı, #ID (örn: 641) veya açıklama ara..."
+                                           Text="Search achievement name, #ID (e.g. 641) or guide..."
                                            Foreground="#786250"
                                            FontSize="12"
                                            VerticalAlignment="Center"
@@ -491,15 +545,15 @@
                         <!-- Status Filter Buttons (All / Unlocked / Locked) -->
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,12,0">
                             <Button x:Name="BtnFilterAll"
-                                    Content="Tümü (641)"
+                                    Content="All (641)"
                                     Style="{StaticResource IsaacFilterButtonStyle}"
                                     Click="BtnFilterAll_Click"/>
                             <Button x:Name="BtnFilterUnlocked"
-                                    Content="✓ Açılanlar (0)"
+                                    Content="✓ Unlocked (0)"
                                     Style="{StaticResource IsaacFilterButtonStyle}"
                                     Click="BtnFilterUnlocked_Click"/>
                             <Button x:Name="BtnFilterLocked"
-                                    Content="🔒 Kilitliler (0)"
+                                    Content="🔒 Locked (0)"
                                     Style="{StaticResource IsaacFilterButtonStyle}"
                                     Click="BtnFilterLocked_Click"/>
                         </StackPanel>
@@ -513,7 +567,7 @@
                                       SelectedIndex="0"
                                       SelectionChanged="CmbDlcFilter_SelectionChanged"
                                       FontSize="12">
-                                <ComboBoxItem Content="Tüm Paketler (1-641)"/>
+                                <ComboBoxItem x:Name="CbiDlcAll" Content="All Packs (1-641)"/>
                                 <ComboBoxItem Content="Rebirth (1-178)"/>
                                 <ComboBoxItem Content="Afterbirth (179-276)"/>
                                 <ComboBoxItem Content="Afterbirth+ (277-403)"/>
@@ -524,30 +578,30 @@
 
                         <!-- Category Filter -->
                         <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="Kategori:" Foreground="#C2A88B" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock x:Name="LblCategoryFilter" Text="Category:" Foreground="#C2A88B" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <ComboBox x:Name="CmbCategoryFilter"
                                       Width="175"
                                       Height="30"
                                       SelectedIndex="0"
                                       SelectionChanged="CmbCategoryFilter_SelectionChanged"
                                       FontSize="12">
-                                <ComboBoxItem Content="Tüm Kategoriler"/>
-                                <ComboBoxItem Content="Karakter"/>
-                                <ComboBoxItem Content="Eşya (Item)"/>
-                                <ComboBoxItem Content="Trinket"/>
-                                <ComboBoxItem Content="Boss &amp; Bölüm"/>
-                                <ComboBoxItem Content="Challenge"/>
-                                <ComboBoxItem Content="Kart / Rune / Soul"/>
-                                <ComboBoxItem Content="Co-op Baby"/>
-                                <ComboBoxItem Content="Repentance+ &amp; Online"/>
-                                <ComboBoxItem Content="Sır &amp; Genel"/>
+                                <ComboBoxItem x:Name="CbiCatAll" Content="All Categories"/>
+                                <ComboBoxItem x:Name="CbiCatChar" Content="Character"/>
+                                <ComboBoxItem x:Name="CbiCatItem" Content="Item"/>
+                                <ComboBoxItem x:Name="CbiCatTrinket" Content="Trinket"/>
+                                <ComboBoxItem x:Name="CbiCatBoss" Content="Boss &amp; Chapter"/>
+                                <ComboBoxItem x:Name="CbiCatChallenge" Content="Challenge"/>
+                                <ComboBoxItem x:Name="CbiCatCard" Content="Card / Rune / Soul"/>
+                                <ComboBoxItem x:Name="CbiCatBaby" Content="Co-op Baby"/>
+                                <ComboBoxItem x:Name="CbiCatRepPlus" Content="Repentance+ &amp; Online"/>
+                                <ComboBoxItem x:Name="CbiCatSecret" Content="Secret &amp; Misc"/>
                             </ComboBox>
                         </StackPanel>
 
                         <!-- Right Summary -->
                         <TextBlock x:Name="TxtFilterResultCount"
                                    Grid.Column="4"
-                                   Text="641 başarım listeleniyor"
+                                   Text="Showing 641 achievements"
                                    Foreground="#D4BA98"
                                    FontSize="12"
                                    FontWeight="SemiBold"
@@ -705,16 +759,16 @@
                                                                VerticalAlignment="Center"/>
                                                 </StackPanel>
 
-                                                <!-- Oyun İçi Açıklama -->
-                                                <TextBlock Text="{Binding InGameDescTr}"
+                                                <!-- In-Game Description -->
+                                                <TextBlock Text="{Binding DisplayInGameDesc}"
                                                            Foreground="#C9B293"
                                                            FontSize="12"
                                                            TextWrapping="Wrap"
                                                            HorizontalAlignment="Left"
                                                            Margin="0,0,0,3"/>
 
-                                                <!-- Nasıl Açılır (Unlock Condition) -->
-                                                <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" FontSize="12"><Run Text="Nasıl Açılır: " Foreground="#EA9B56" FontWeight="SemiBold"/><Run Text="{Binding UnlockByTr}" Foreground="#EFE1CA"/></TextBlock>
+                                                <!-- How to Unlock -->
+                                                <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" FontSize="12"><Run Text="{Binding DisplayUnlockPrefix, Mode=OneWay}" Foreground="#EA9B56" FontWeight="SemiBold"/><Run Text="{Binding DisplayUnlockBy, Mode=OneWay}" Foreground="#EFE1CA"/></TextBlock>
                                             </StackPanel>
 
                                             <!-- COL 2: STATUS & DLC BADGES -->
@@ -745,7 +799,7 @@
                                                             BorderThickness="1"
                                                             CornerRadius="3"
                                                             Padding="6,2">
-                                                        <TextBlock Text="{Binding Category}"
+                                                        <TextBlock Text="{Binding DisplayCategory}"
                                                                    Foreground="#D9C3A5"
                                                                    FontSize="10.5"/>
                                                     </Border>
@@ -788,7 +842,7 @@
                                                 Padding="8,5"
                                                 Margin="0,0,0,10">
                                             <TextBlock x:Name="TxtDetailBanner"
-                                                       Text="SECRET FOUND! (SIR KAĞIDI)"
+                                                       Text="SECRET FOUND!"
                                                        Foreground="#F5E4C8"
                                                        FontWeight="Bold"
                                                        FontSize="12.5"
@@ -812,14 +866,14 @@
                                                 <Grid x:Name="DetailLockOverlay"
                                                       Background="#5E000000"
                                                       Visibility="Collapsed">
-                                                    <Line X1="0" Y1="0" X2="132" Y2="132" Stroke="#992B1D16" StrokeThickness="3" StrokeDashArray="3,2"/>
-                                                    <Line X1="132" Y1="0" X2="0" Y2="132" Stroke="#992B1D16" StrokeThickness="3" StrokeDashArray="3,2"/>
+                                                    <Line X1="0" Y1="0" X2="116" Y2="116" Stroke="#992B1D16" StrokeThickness="3" StrokeDashArray="3,2"/>
+                                                    <Line X1="116" Y1="0" X2="0" Y2="116" Stroke="#992B1D16" StrokeThickness="3" StrokeDashArray="3,2"/>
 
-                                                    <Border Width="54" Height="54"
+                                                    <Border Width="52" Height="52"
                                                             Background="#E51A110E"
                                                             BorderBrush="#E0AD56"
                                                             BorderThickness="2"
-                                                            CornerRadius="27"
+                                                            CornerRadius="26"
                                                             HorizontalAlignment="Center"
                                                             VerticalAlignment="Center">
                                                         <Canvas Width="34" Height="34" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -859,7 +913,7 @@
                                                 HorizontalAlignment="Center"
                                                 Margin="0,0,0,12">
                                             <TextBlock x:Name="TxtDetailStatus"
-                                                       Text="BU BAŞARIM AÇILMIŞ"
+                                                       Text="UNLOCKED IN THIS SAVE FILE"
                                                        Foreground="#FFF8EB"
                                                        FontWeight="Bold"
                                                        FontSize="11"/>
@@ -869,19 +923,19 @@
                                         <UniformGrid Columns="2" Margin="0,0,0,12">
                                             <Border Background="#CEBA9A" BorderBrush="#967A56" BorderThickness="1" CornerRadius="3" Padding="8,5" Margin="0,0,4,0">
                                                 <StackPanel>
-                                                    <TextBlock Text="PAKET (DLC)" Foreground="#5C442C" FontSize="10" FontWeight="Bold"/>
+                                                    <TextBlock x:Name="LblDetailDlc" Text="DLC PACK" Foreground="#5C442C" FontSize="10" FontWeight="Bold"/>
                                                     <TextBlock x:Name="TxtDetailDlc" Text="Rebirth" Foreground="#24160E" FontSize="13" FontWeight="Bold"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border Background="#CEBA9A" BorderBrush="#967A56" BorderThickness="1" CornerRadius="3" Padding="8,5" Margin="4,0,0,0">
                                                 <StackPanel>
-                                                    <TextBlock Text="KATEGORİ" Foreground="#5C442C" FontSize="10" FontWeight="Bold"/>
-                                                    <TextBlock x:Name="TxtDetailCategory" Text="Karakter" Foreground="#24160E" FontSize="13" FontWeight="Bold"/>
+                                                    <TextBlock x:Name="LblDetailCategory" Text="CATEGORY" Foreground="#5C442C" FontSize="10" FontWeight="Bold"/>
+                                                    <TextBlock x:Name="TxtDetailCategory" Text="Character" Foreground="#24160E" FontSize="13" FontWeight="Bold"/>
                                                 </StackPanel>
                                             </Border>
                                         </UniformGrid>
 
-                                        <!-- Section 1: Oyun İçi Açıklama (TR & EN) -->
+                                        <!-- Section 1: Achievement Description -->
                                         <Border Background="#CEBA9A"
                                                 BorderBrush="#967A56"
                                                 BorderThickness="1"
@@ -889,19 +943,20 @@
                                                 Padding="10,8"
                                                 Margin="0,0,0,10">
                                             <StackPanel>
-                                                <TextBlock Text="📜 BAŞARIM HAKKINDA AÇIKLAMA"
+                                                <TextBlock x:Name="LblDetailDescSection"
+                                                           Text="📜 ACHIEVEMENT DESCRIPTION"
                                                            Foreground="#692418"
                                                            FontWeight="Bold"
                                                            FontSize="11"
                                                            Margin="0,0,0,4"/>
-                                                <TextBlock x:Name="TxtDetailDescTr"
+                                                <TextBlock x:Name="TxtDetailDescPrimary"
                                                            Text="-"
                                                            Foreground="#1F130C"
                                                            FontWeight="SemiBold"
                                                            FontSize="12.5"
                                                            TextWrapping="Wrap"
                                                            Margin="0,0,0,4"/>
-                                                <TextBlock x:Name="TxtDetailDescEn"
+                                                <TextBlock x:Name="TxtDetailDescSecondary"
                                                            Text="-"
                                                            Foreground="#4F3A28"
                                                            FontSize="11.5"
@@ -909,7 +964,7 @@
                                             </StackPanel>
                                         </Border>
 
-                                        <!-- Section 2: Nasıl Açılır (Unlock Condition TR) -->
+                                        <!-- Section 2: How to Unlock (Primary Language) -->
                                         <Border Background="#CEBA9A"
                                                 BorderBrush="#967A56"
                                                 BorderThickness="1"
@@ -917,12 +972,13 @@
                                                 Padding="10,8"
                                                 Margin="0,0,0,10">
                                             <StackPanel>
-                                                <TextBlock Text="🗝️ NASIL AÇILIR? (TÜRKÇE REHBER)"
+                                                <TextBlock x:Name="LblDetailUnlockPrimary"
+                                                           Text="🗝️ HOW TO UNLOCK"
                                                            Foreground="#692418"
                                                            FontWeight="Bold"
                                                            FontSize="11"
                                                            Margin="0,0,0,4"/>
-                                                <TextBlock x:Name="TxtDetailUnlockTr"
+                                                <TextBlock x:Name="TxtDetailUnlockPrimary"
                                                            Text="-"
                                                            Foreground="#1C100A"
                                                            FontWeight="SemiBold"
@@ -931,19 +987,20 @@
                                             </StackPanel>
                                         </Border>
 
-                                        <!-- Section 3: Original English Requirement -->
+                                        <!-- Section 3: Secondary Language Translation -->
                                         <Border Background="#CEBA9A"
                                                 BorderBrush="#967A56"
                                                 BorderThickness="1"
                                                 CornerRadius="4"
                                                 Padding="10,8">
                                             <StackPanel>
-                                                <TextBlock Text="🌐 ORİJİNAL KOŞUL (ENGLISH)"
+                                                <TextBlock x:Name="LblDetailUnlockSecondary"
+                                                           Text="🌐 TURKISH GUIDE (TÜRKÇE REHBER)"
                                                            Foreground="#5C442C"
                                                            FontWeight="Bold"
                                                            FontSize="10.5"
                                                            Margin="0,0,0,3"/>
-                                                <TextBlock x:Name="TxtDetailUnlockEn"
+                                                <TextBlock x:Name="TxtDetailUnlockSecondary"
                                                            Text="-"
                                                            Foreground="#362417"
                                                            FontSize="11.5"
@@ -965,10 +1022,11 @@
                         Padding="14,0">
                     <DockPanel VerticalAlignment="Center">
                         <TextBlock x:Name="TxtFooterStatus"
-                                   Text="Hazır • Save dosyası salt okunur (Read-Only) modda yüklendi."
+                                   Text="Ready • Save file loaded in Read-Only mode."
                                    Foreground="#A89076"
                                    FontSize="11"/>
-                        <TextBlock Text="The Binding of Isaac: Repentance+ Achievement Viewer (.NET WPF • Salt Okunur)"
+                        <TextBlock x:Name="TxtFooterRight"
+                                   Text="The Binding of Isaac: Repentance+ Achievement Viewer (.NET WPF • Read-Only)"
                                    Foreground="#78634F"
                                    FontSize="11"
                                    HorizontalAlignment="Right"/>

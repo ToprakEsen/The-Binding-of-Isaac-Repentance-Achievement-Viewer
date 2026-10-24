@@ -23,6 +23,7 @@ namespace IsaacRepentancePlusAchievements.Models
     public class AchievementItem : INotifyPropertyChanged
     {
         private bool _isUnlocked;
+        private bool _isTurkish;
         private ImageSource _iconSource;
 
         public int Id { get; set; }
@@ -50,6 +51,86 @@ namespace IsaacRepentancePlusAchievements.Models
                 _iconSource = value;
                 OnPropertyChanged("IconSource");
             }
+        }
+
+        public bool IsTurkish
+        {
+            get { return _isTurkish; }
+            set
+            {
+                if (_isTurkish != value)
+                {
+                    _isTurkish = value;
+                    RefreshLanguageBindings();
+                }
+            }
+        }
+
+        public void RefreshLanguageBindings()
+        {
+            OnPropertyChanged("DisplayInGameDesc");
+            OnPropertyChanged("DisplayUnlockPrefix");
+            OnPropertyChanged("DisplayUnlockBy");
+            OnPropertyChanged("DisplayCategory");
+            OnPropertyChanged("StatusText");
+            OnPropertyChanged("StatusDetailText");
+            OnPropertyChanged("SecretBannerTitle");
+        }
+
+        public string DisplayInGameDesc
+        {
+            get
+            {
+                if (_isTurkish)
+                {
+                    return !string.IsNullOrWhiteSpace(InGameDescTr) ? InGameDescTr : InGameDescEn;
+                }
+                if (string.IsNullOrWhiteSpace(InGameDescEn) || InGameDescEn == "-")
+                {
+                    return "Unlocks " + Name + ".";
+                }
+                return InGameDescEn;
+            }
+        }
+
+        public string DisplayUnlockPrefix
+        {
+            get { return _isTurkish ? "Nasıl Açılır: " : "How to Unlock: "; }
+        }
+
+        public string DisplayUnlockBy
+        {
+            get
+            {
+                if (_isTurkish)
+                {
+                    return !string.IsNullOrWhiteSpace(UnlockByTr) ? UnlockByTr : UnlockByEn;
+                }
+                return !string.IsNullOrWhiteSpace(UnlockByEn) ? UnlockByEn : UnlockByTr;
+            }
+        }
+
+        public string DisplayCategory
+        {
+            get
+            {
+                if (_isTurkish) return Category;
+                return TranslateCategoryToEnglish(Category);
+            }
+        }
+
+        public static string TranslateCategoryToEnglish(string catTr)
+        {
+            if (catTr == "Karakter") return "Character";
+            if (catTr == "Eşya (Item)") return "Item";
+            if (catTr == "Trinket") return "Trinket";
+            if (catTr == "Boss & Bölüm") return "Boss & Chapter";
+            if (catTr == "Challenge") return "Challenge";
+            if (catTr == "Kart / Rune / Soul") return "Card / Rune / Soul";
+            if (catTr == "Co-op Baby") return "Co-op Baby";
+            if (catTr == "Repentance+ & Online") return "Repentance+ & Online";
+            if (catTr == "Sır & Genel") return "Secret & Misc";
+            return catTr;
         }
 
         public bool IsUnlocked
@@ -86,17 +167,38 @@ namespace IsaacRepentancePlusAchievements.Models
 
         public string StatusText
         {
-            get { return _isUnlocked ? "AÇIK" : "KİLİTLİ"; }
+            get
+            {
+                if (_isTurkish)
+                {
+                    return _isUnlocked ? "AÇIK" : "KİLİTLİ";
+                }
+                return _isUnlocked ? "UNLOCKED" : "LOCKED";
+            }
         }
 
         public string StatusDetailText
         {
-            get { return _isUnlocked ? "BU BAŞARIM KAYIT DOSYASINDA AÇILMIŞ" : "BU BAŞARIM HENÜZ KİLİTLİ"; }
+            get
+            {
+                if (_isTurkish)
+                {
+                    return _isUnlocked ? "BU BAŞARIM KAYIT DOSYASINDA AÇILMIŞ" : "BU BAŞARIM HENÜZ KİLİTLİ";
+                }
+                return _isUnlocked ? "UNLOCKED IN THIS SAVE FILE" : "CURRENTLY LOCKED IN THIS SAVE";
+            }
         }
 
         public string SecretBannerTitle
         {
-            get { return _isUnlocked ? "SECRET FOUND! (SIR AÇILDI)" : "LOCKED SECRET (KİLİTLİ SIR)"; }
+            get
+            {
+                if (_isTurkish)
+                {
+                    return _isUnlocked ? "SECRET FOUND! (SIR AÇILDI)" : "LOCKED SECRET (KİLİTLİ SIR)";
+                }
+                return _isUnlocked ? "SECRET FOUND!" : "LOCKED SECRET";
+            }
         }
 
         public double ImageOpacity
@@ -134,7 +236,7 @@ namespace IsaacRepentancePlusAchievements.Models
             {
                 if (_isUnlocked)
                 {
-                    return new SolidColorBrush(Color.FromRgb(58, 118, 52)); // Isaac Poison/Emerald Green
+                    return new SolidColorBrush(Color.FromRgb(58, 118, 52)); // Isaac Emerald Green
                 }
                 return new SolidColorBrush(Color.FromRgb(138, 32, 32)); // Isaac Blood Red
             }
