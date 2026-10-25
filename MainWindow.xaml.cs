@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -27,13 +27,38 @@ namespace IsaacRepentancePlusAchievements
     {
         private readonly List<AchievementItem> _allAchievements = new List<AchievementItem>();
         private readonly List<AchievementItem> _milestoneAchievements = new List<AchievementItem>();
+        private readonly Dictionary<int, HashSet<int>> _previousSlotUnlockedIds = new Dictionary<int, HashSet<int>>();
+        private readonly HashSet<int> _sessionUnlockedIds = new HashSet<int>();
         private List<SaveSlotData> _saveSlots = new List<SaveSlotData>();
         private int _activeSlotIndex = 0; // 0 = Slot 1, 1 = Slot 2, 2 = Slot 3
-        private string _statusFilter = "ALL"; // ALL, UNLOCKED, LOCKED, MILESTONES
+        private string _statusFilter = "ALL"; // ALL, UNLOCKED, LOCKED, MILESTONES, RECENT
         private bool _isTurkish = false; // Default language: English (false)
+        private bool _isUpdatingCharacterCombo = false;
         private FileSystemWatcher _saveWatcher;
         private DispatcherTimer _watcherDebounceTimer;
         private bool _isInitialized = false;
+
+        // All 34 Playable Characters (17 Normal + 17 Tainted)
+        private static readonly string[] PlayableCharacters = new string[]
+        {
+            "Isaac", "Magdalene", "Cain", "Judas", "???", "Eve", "Samson", "Azazel",
+            "Lazarus", "Eden", "The Lost", "Lilith", "Keeper", "Apollyon", "The Forgotten", "Bethany", "Jacob and Esau",
+            "Tainted Isaac", "Tainted Magdalene", "Tainted Cain", "Tainted Judas", "Tainted ???", "Tainted Eve", "Tainted Samson", "Tainted Azazel",
+            "Tainted Lazarus", "Tainted Eden", "Tainted Lost", "Tainted Lilith", "Tainted Keeper", "Tainted Apollyon", "Tainted Forgotten", "Tainted Bethany", "Tainted Jacob"
+        };
+
+        private static readonly Dictionary<int, string> DirectCharacterUnlockIds = new Dictionary<int, string>
+        {
+            { 1, "Magdalene" }, { 2, "Cain" }, { 3, "Judas" }, { 32, "???" },
+            { 42, "Eve" }, { 67, "Samson" }, { 79, "Azazel" }, { 80, "Lazarus" },
+            { 81, "Eden" }, { 82, "The Lost" }, { 199, "Lilith" }, { 251, "Keeper" },
+            { 340, "Apollyon" }, { 390, "The Forgotten" }, { 404, "Bethany" }, { 405, "Jacob and Esau" },
+            { 474, "Tainted Isaac" }, { 475, "Tainted Magdalene" }, { 476, "Tainted Cain" }, { 477, "Tainted Judas" },
+            { 478, "Tainted ???" }, { 479, "Tainted Eve" }, { 480, "Tainted Samson" }, { 481, "Tainted Azazel" },
+            { 482, "Tainted Lazarus" }, { 483, "Tainted Eden" }, { 484, "Tainted Lost" }, { 485, "Tainted Lilith" },
+            { 486, "Tainted Keeper" }, { 487, "Tainted Apollyon" }, { 488, "Tainted Forgotten" }, { 489, "Tainted Bethany" },
+            { 490, "Tainted Jacob" }
+        };
 
         // Ordered progression of 11 iconic Binding of Isaac milestones (for Milestones filter tab)
         private static readonly int[] MilestoneOrderIds = new int[]
@@ -96,6 +121,7 @@ namespace IsaacRepentancePlusAchievements
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            Closed += (s, e) => Application.Current.Shutdown();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -126,6 +152,32 @@ namespace IsaacRepentancePlusAchievements
                         UpdateStatusFilterButtonStyles();
                         ApplyFilters();
                         if (LstAchievements.Items.Count > 0) LstAchievements.SelectedIndex = 0;
+                    }
+                    else if (cmdArgs[i] == "--char-index" && i + 1 < cmdArgs.Length)
+                    {
+                        int cIdx;
+                        if (int.TryParse(cmdArgs[i + 1], out cIdx) && cIdx >= 0 && cIdx < CmbCharacterFilter.Items.Count)
+                        {
+                            CmbCharacterFilter.SelectedIndex = cIdx;
+                            ApplyFilters();
+                            if (LstAchievements.Items.Count > 0) LstAchievements.SelectedIndex = 0;
+                        }
+                    }
+                    else if (cmdArgs[i] == "--test-toast" && i + 1 < cmdArgs.Length)
+                    {
+                        string toastOutPath = cmdArgs[i + 1];
+                        AchievementItem sample = _allAchievements.FirstOrDefault(a => a.Id == 29) ?? _allAchievements[0];
+                        _sessionUnlockedIds.Add(sample.Id);
+                        sample.IsRecentlyUnlocked = true;
+                        SelectSaveSlot(_activeSlotIndex);
+                        UnlockToastWindow toastWin = UnlockToastWindow.ShowToast(sample, _isTurkish, OnToastAchievementClicked);
+                        DispatcherTimer tTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(550) };
+                        tTimer.Tick += (st, et) =>
+                        {
+                            tTimer.Stop();
+                            if (toastWin != null) toastWin.SaveToastRenderPng(toastOutPath);
+                        };
+                        tTimer.Start();
                     }
                     else if (cmdArgs[i] == "--screenshot" && i + 1 < cmdArgs.Length)
                     {
@@ -174,6 +226,10 @@ namespace IsaacRepentancePlusAchievements
                 : "The Binding of Isaac: Repentance+ - Achievement Viewer";
             TxtTitleBadge.Text = _isTurkish ? "BAŞARIM GÜNLÜĞÜ" : "ACHIEVEMENT VIEWER";
             TxtReadOnlyShield.Text = _isTurkish ? "🔒 Salt Okunur" : "🔒 Read-Only";
+            TxtBtnTestToast.Text = _isTurkish ? "🔔 Bildirim" : "🔔 Test Toast";
+            BtnTestToast.ToolTip = _isTurkish
+                ? "Sağ altta başarım açıldı bildirimini (Toast) test et"
+                : "Preview Bottom-Right Achievement Notification";
             TxtBtnRefresh.Text = _isTurkish ? "↻ Yenile" : "↻ Refresh";
             TxtBtnSelectSave.Text = _isTurkish ? "📂 Save Seç" : "📂 Open Save";
 
@@ -194,6 +250,7 @@ namespace IsaacRepentancePlusAchievements
             TxtSearchPlaceholder.Text = _isTurkish
                 ? "Başarım adı veya #ID ara..."
                 : "Search achievement or #ID...";
+            LblCharacterFilter.Text = _isTurkish ? "Karakter:" : "Char:";
             CbiDlcAll.Content = _isTurkish ? "Tüm Paketler (1-641)" : "All Packs (1-641)";
             LblCategoryFilter.Text = _isTurkish ? "Kategori:" : "Category:";
             CbiCatAll.Content = _isTurkish ? "Tüm Kategoriler" : "All Categories";
@@ -326,6 +383,7 @@ namespace IsaacRepentancePlusAchievements
 
                 string shortMsName;
                 bool isMs = MilestoneShortNames.TryGetValue(dto.Id, out shortMsName);
+                string assocChar = ResolveAssociatedCharacter(dto.Id, dto.Name, dto.UnlockByEn);
 
                 AchievementItem item = new AchievementItem
                 {
@@ -344,7 +402,8 @@ namespace IsaacRepentancePlusAchievements
                     IsTurkish = _isTurkish,
                     IsUnlocked = false,
                     IsMilestone = isMs,
-                    ShortMilestoneTitle = isMs ? shortMsName : (dto.Name ?? "")
+                    ShortMilestoneTitle = isMs ? shortMsName : (dto.Name ?? ""),
+                    AssociatedCharacter = assocChar
                 };
 
                 _allAchievements.Add(item);
@@ -373,6 +432,59 @@ namespace IsaacRepentancePlusAchievements
             IcMilestones.ItemsSource = featuredMilestones;
         }
 
+        private string ResolveAssociatedCharacter(int id, string name, string unlockByEn)
+        {
+            string directChar;
+            if (DirectCharacterUnlockIds.TryGetValue(id, out directChar))
+            {
+                return directChar;
+            }
+
+            if (string.IsNullOrWhiteSpace(unlockByEn)) return null;
+
+            // Check Tainted characters first (indices 17..33) so "as Tainted Isaac" matches Tainted Isaac
+            for (int i = 17; i < PlayableCharacters.Length; i++)
+            {
+                string tChar = PlayableCharacters[i];
+                if (unlockByEn.IndexOf("as " + tChar, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return tChar;
+                }
+            }
+
+            // Check Normal characters (indices 0..16)
+            if (unlockByEn.IndexOf("as Tainted ", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                for (int i = 0; i < 17; i++)
+                {
+                    string nChar = PlayableCharacters[i];
+                    string shortName = nChar.StartsWith("The ", StringComparison.OrdinalIgnoreCase) ? nChar.Substring(4) : nChar;
+
+                    if (ContainsCharacterPhrase(unlockByEn, "as " + nChar) ||
+                        ContainsCharacterPhrase(unlockByEn, "as " + shortName))
+                    {
+                        return nChar;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static bool ContainsCharacterPhrase(string text, string phrase)
+        {
+            int idx = text.IndexOf(phrase, StringComparison.OrdinalIgnoreCase);
+            while (idx >= 0)
+            {
+                int afterIdx = idx + phrase.Length;
+                if (afterIdx >= text.Length) return true;
+                char next = text[afterIdx];
+                if (!char.IsLetterOrDigit(next)) return true;
+                idx = text.IndexOf(phrase, idx + 1, StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
+        }
+
         private ImageSource LoadIconBitmapSafe(string path)
         {
             try
@@ -398,6 +510,34 @@ namespace IsaacRepentancePlusAchievements
         {
             _saveSlots = ReadOnlySaveReader.AutoDetectAndReadAllSlots();
 
+            // Check for newly unlocked achievements across any slot since the last read
+            List<AchievementItem> newlyUnlockedItems = new List<AchievementItem>();
+            for (int sIdx = 0; sIdx < _saveSlots.Count; sIdx++)
+            {
+                SaveSlotData slot = _saveSlots[sIdx];
+                if (!slot.Exists) continue;
+
+                HashSet<int> prevSet;
+                if (_previousSlotUnlockedIds.TryGetValue(sIdx, out prevSet))
+                {
+                    foreach (int achId in slot.UnlockedAchievementIds)
+                    {
+                        if (!prevSet.Contains(achId))
+                        {
+                            _sessionUnlockedIds.Add(achId);
+                            AchievementItem item = _allAchievements.FirstOrDefault(a => a.Id == achId);
+                            if (item != null)
+                            {
+                                item.IsRecentlyUnlocked = true;
+                                newlyUnlockedItems.Add(item);
+                            }
+                        }
+                    }
+                }
+
+                _previousSlotUnlockedIds[sIdx] = new HashSet<int>(slot.UnlockedAchievementIds);
+            }
+
             if (_saveSlots.Count >= 3)
             {
                 UpdateSlotButtonSummary(0, TxtSlot1Percent, TxtSlot1Count, TxtSlot1Rank);
@@ -412,6 +552,12 @@ namespace IsaacRepentancePlusAchievements
 
             SelectSaveSlot(_activeSlotIndex);
             SetupReadOnlyFileWatcher();
+
+            // Show bottom-right toast notifications for newly unlocked achievements
+            foreach (AchievementItem newAch in newlyUnlockedItems)
+            {
+                UnlockToastWindow.ShowToast(newAch, _isTurkish, OnToastAchievementClicked);
+            }
         }
 
         private void UpdateSlotButtonSummary(int idx, TextBlock txtPercent, TextBlock txtCount, TextBlock txtRank)
@@ -453,10 +599,15 @@ namespace IsaacRepentancePlusAchievements
             foreach (AchievementItem ach in _allAchievements)
             {
                 ach.IsUnlocked = active.Exists && active.UnlockedAchievementIds.Contains(ach.Id);
+                ach.IsRecentlyUnlocked = _sessionUnlockedIds.Contains(ach.Id);
             }
+
+            // Update 34-Character Filter ComboBox with live completion counts
+            UpdateCharacterFilterItems();
 
             // Update Milestone unlocked counter
             int unlockedMilestones = _milestoneAchievements.Count(m => m.IsUnlocked);
+            int recentCount = _sessionUnlockedIds.Count;
             TxtMilestonesProgress.Text = string.Format("{0} / {1}", unlockedMilestones, _milestoneAchievements.Count);
 
             if (_isTurkish)
@@ -516,6 +667,7 @@ namespace IsaacRepentancePlusAchievements
                 BtnFilterUnlocked.Content = string.Format("✓ Açılanlar ({0})", active.UnlockedCount);
                 BtnFilterLocked.Content = string.Format("🔒 Kilitliler ({0})", active.LockedCount);
                 BtnFilterMilestones.Content = string.Format("🏆 Kilometre Taşları ({0}/{1})", unlockedMilestones, _milestoneAchievements.Count);
+                BtnFilterRecent.Content = string.Format("🔥 Son Açılanlar ({0})", recentCount);
             }
             else
             {
@@ -523,6 +675,7 @@ namespace IsaacRepentancePlusAchievements
                 BtnFilterUnlocked.Content = string.Format("✓ Unlocked ({0})", active.UnlockedCount);
                 BtnFilterLocked.Content = string.Format("🔒 Locked ({0})", active.LockedCount);
                 BtnFilterMilestones.Content = string.Format("🏆 Milestones ({0}/{1})", unlockedMilestones, _milestoneAchievements.Count);
+                BtnFilterRecent.Content = string.Format("🔥 Recent ({0})", recentCount);
             }
             UpdateStatusFilterButtonStyles();
 
@@ -551,12 +704,59 @@ namespace IsaacRepentancePlusAchievements
             }
         }
 
+        private void UpdateCharacterFilterItems()
+        {
+            if (CmbCharacterFilter == null) return;
+
+            _isUpdatingCharacterCombo = true;
+            try
+            {
+                int prevSelected = CmbCharacterFilter.SelectedIndex;
+                if (prevSelected < 0) prevSelected = 0;
+
+                CmbCharacterFilter.Items.Clear();
+                CmbCharacterFilter.Items.Add(new ComboBoxItem
+                {
+                    Content = _isTurkish ? "Tüm Karakterler (34)" : "All Characters (34)",
+                    Tag = null
+                });
+
+                foreach (string charName in PlayableCharacters)
+                {
+                    int totalForChar = _allAchievements.Count(a => a.AssociatedCharacter == charName);
+                    int unlockedForChar = _allAchievements.Count(a => a.AssociatedCharacter == charName && a.IsUnlocked);
+                    string checkMark = (totalForChar > 0 && unlockedForChar == totalForChar) ? " ✓" : "";
+                    string label = string.Format("{0} ({1}/{2}{3})", charName, unlockedForChar, totalForChar, checkMark);
+
+                    CmbCharacterFilter.Items.Add(new ComboBoxItem
+                    {
+                        Content = label,
+                        Tag = charName
+                    });
+                }
+
+                if (prevSelected >= 0 && prevSelected < CmbCharacterFilter.Items.Count)
+                {
+                    CmbCharacterFilter.SelectedIndex = prevSelected;
+                }
+                else
+                {
+                    CmbCharacterFilter.SelectedIndex = 0;
+                }
+            }
+            finally
+            {
+                _isUpdatingCharacterCombo = false;
+            }
+        }
+
         private void UpdateStatusFilterButtonStyles()
         {
             SetFilterBtnHighlight(BtnFilterAll, _statusFilter == "ALL");
             SetFilterBtnHighlight(BtnFilterUnlocked, _statusFilter == "UNLOCKED");
             SetFilterBtnHighlight(BtnFilterLocked, _statusFilter == "LOCKED");
             SetFilterBtnHighlight(BtnFilterMilestones, _statusFilter == "MILESTONES");
+            SetFilterBtnHighlight(BtnFilterRecent, _statusFilter == "RECENT");
         }
 
         private void SetFilterBtnHighlight(Button btn, bool active)
@@ -600,6 +800,18 @@ namespace IsaacRepentancePlusAchievements
             else if (_statusFilter == "MILESTONES")
             {
                 filtered = _milestoneAchievements;
+            }
+            else if (_statusFilter == "RECENT")
+            {
+                filtered = filtered.Where(a => _sessionUnlockedIds.Contains(a.Id));
+            }
+
+            // 1b. Character filter (34 Playable Characters)
+            ComboBoxItem selectedCharItem = CmbCharacterFilter != null ? CmbCharacterFilter.SelectedItem as ComboBoxItem : null;
+            string selectedCharName = selectedCharItem != null ? selectedCharItem.Tag as string : null;
+            if (!string.IsNullOrEmpty(selectedCharName))
+            {
+                filtered = filtered.Where(a => string.Equals(a.AssociatedCharacter, selectedCharName, StringComparison.OrdinalIgnoreCase));
             }
 
             // 2. DLC filter
@@ -891,6 +1103,61 @@ namespace IsaacRepentancePlusAchievements
         {
             _statusFilter = "MILESTONES";
             UpdateStatusFilterButtonStyles();
+            ApplyFilters();
+        }
+
+        private void BtnFilterRecent_Click(object sender, RoutedEventArgs e)
+        {
+            _statusFilter = "RECENT";
+            UpdateStatusFilterButtonStyles();
+            ApplyFilters();
+        }
+
+        private void BtnTestToast_Click(object sender, RoutedEventArgs e)
+        {
+            AchievementItem target = LstAchievements.SelectedItem as AchievementItem;
+            if (target == null && _allAchievements.Count > 0)
+            {
+                target = _allAchievements.FirstOrDefault(a => a.Id == 637) ?? _allAchievements[0];
+            }
+            if (target == null) return;
+
+            _sessionUnlockedIds.Add(target.Id);
+            target.IsRecentlyUnlocked = true;
+
+            int recentCount = _sessionUnlockedIds.Count;
+            BtnFilterRecent.Content = _isTurkish
+                ? string.Format("🔥 Son Açılanlar ({0})", recentCount)
+                : string.Format("🔥 Recent ({0})", recentCount);
+
+            UnlockToastWindow.ShowToast(target, _isTurkish, OnToastAchievementClicked);
+        }
+
+        private void OnToastAchievementClicked(AchievementItem item)
+        {
+            if (item == null) return;
+            try
+            {
+                if (WindowState == WindowState.Minimized)
+                {
+                    WindowState = WindowState.Normal;
+                }
+                Activate();
+                UpdateDetailPanel(item);
+
+                List<AchievementItem> currentItems = LstAchievements.ItemsSource as List<AchievementItem>;
+                if (currentItems != null && currentItems.Contains(item))
+                {
+                    LstAchievements.SelectedItem = item;
+                    LstAchievements.ScrollIntoView(item);
+                }
+            }
+            catch { }
+        }
+
+        private void CmbCharacterFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isUpdatingCharacterCombo) return;
             ApplyFilters();
         }
 

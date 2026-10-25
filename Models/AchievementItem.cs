@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
@@ -24,6 +24,7 @@ namespace IsaacRepentancePlusAchievements.Models
     {
         private bool _isUnlocked;
         private bool _isTurkish;
+        private bool _isRecentlyUnlocked;
         private ImageSource _iconSource;
 
         public int Id { get; set; }
@@ -39,6 +40,7 @@ namespace IsaacRepentancePlusAchievements.Models
         public bool Hidden { get; set; }
         public bool IsMilestone { get; set; }
         public string ShortMilestoneTitle { get; set; }
+        public string AssociatedCharacter { get; set; }
 
         public string DisplayId
         {
@@ -78,6 +80,37 @@ namespace IsaacRepentancePlusAchievements.Models
             OnPropertyChanged("MilestoneStatusText");
             OnPropertyChanged("StatusDetailText");
             OnPropertyChanged("SecretBannerTitle");
+            OnPropertyChanged("RecentBadgeText");
+        }
+
+        public bool IsRecentlyUnlocked
+        {
+            get { return _isRecentlyUnlocked; }
+            set
+            {
+                if (_isRecentlyUnlocked != value)
+                {
+                    _isRecentlyUnlocked = value;
+                    OnPropertyChanged("IsRecentlyUnlocked");
+                    OnPropertyChanged("RecentBadgeVisibility");
+                    OnPropertyChanged("RecentBadgeText");
+                }
+            }
+        }
+
+        public Visibility RecentBadgeVisibility
+        {
+            get { return _isRecentlyUnlocked ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        public string RecentBadgeText
+        {
+            get { return _isTurkish ? "🔥 YENİ" : "🔥 NEW"; }
+        }
+
+        public Visibility CharacterBadgeVisibility
+        {
+            get { return !string.IsNullOrEmpty(AssociatedCharacter) ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public string DisplayInGameDesc

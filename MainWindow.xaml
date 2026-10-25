@@ -1,4 +1,4 @@
-﻿<Window x:Class="IsaacRepentancePlusAchievements.MainWindow"
+<Window x:Class="IsaacRepentancePlusAchievements.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="The Binding of Isaac: Repentance+ - Achievement Viewer"
@@ -242,6 +242,15 @@
                                 </StackPanel>
                             </Button>
 
+                            <Button x:Name="BtnTestToast"
+                                    Style="{StaticResource TitleBarButtonStyle}"
+                                    Click="BtnTestToast_Click"
+                                    Margin="0,0,6,0"
+                                    Height="28"
+                                    ToolTip="Preview Bottom-Right Achievement Notification">
+                                <TextBlock x:Name="TxtBtnTestToast" Text="🔔 Test Toast" FontSize="11.5"/>
+                            </Button>
+
                             <Button x:Name="BtnRefreshSave"
                                     Style="{StaticResource TitleBarButtonStyle}"
                                     Click="BtnRefreshSave_Click"
@@ -434,8 +443,10 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <!-- Search Box -->
-                            <ColumnDefinition Width="235"/>
+                            <ColumnDefinition Width="170"/>
                             <!-- Unlock Status Filter Buttons -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- Character Filter ComboBox -->
                             <ColumnDefinition Width="Auto"/>
                             <!-- DLC Filter ComboBox -->
                             <ColumnDefinition Width="Auto"/>
@@ -451,19 +462,19 @@
                                 BorderBrush="#2C3142"
                                 BorderThickness="1"
                                 CornerRadius="5"
-                                Margin="0,0,12,0"
-                                Padding="8,4">
+                                Margin="0,0,8,0"
+                                Padding="7,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="🔍" Foreground="#7D8599" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Grid.Column="0" Text="🔍" Foreground="#7D8599" VerticalAlignment="Center" Margin="0,0,5,0"/>
                                 <TextBlock x:Name="TxtSearchPlaceholder"
                                            Grid.Column="1"
-                                           Text="Search achievement or #ID..."
+                                           Text="Search or #ID..."
                                            Foreground="#687085"
-                                           FontSize="12"
+                                           FontSize="11"
                                            VerticalAlignment="Center"
                                            IsHitTestVisible="False"/>
                                 <TextBox x:Name="TxtSearch"
@@ -472,42 +483,72 @@
                                          Foreground="#F2F4F8"
                                          CaretBrush="#E5B85C"
                                          BorderThickness="0"
-                                         FontSize="12.5"
+                                         FontSize="11.5"
                                          VerticalAlignment="Center"
                                          TextChanged="TxtSearch_TextChanged"/>
                             </Grid>
                         </Border>
 
-                        <!-- Status Filter Buttons (All / Unlocked / Locked / Milestones) -->
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+                        <!-- Status Filter Buttons (All / Unlocked / Locked / Milestones / Recent) -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,6,0">
                             <Button x:Name="BtnFilterAll"
                                     Content="All (641)"
+                                    Padding="9,5"
+                                    Margin="0,0,4,0"
+                                    FontSize="11.5"
                                     Style="{StaticResource IsaacFilterButtonStyle}"
                                     Click="BtnFilterAll_Click"/>
                             <Button x:Name="BtnFilterUnlocked"
                                     Content="✓ Unlocked (0)"
+                                    Padding="9,5"
+                                    Margin="0,0,4,0"
+                                    FontSize="11.5"
                                     Style="{StaticResource IsaacFilterButtonStyle}"
                                     Click="BtnFilterUnlocked_Click"/>
                             <Button x:Name="BtnFilterLocked"
                                     Content="🔒 Locked (0)"
+                                    Padding="9,5"
+                                    Margin="0,0,4,0"
+                                    FontSize="11.5"
                                     Style="{StaticResource IsaacFilterButtonStyle}"
                                     Click="BtnFilterLocked_Click"/>
                             <Button x:Name="BtnFilterMilestones"
                                     Content="🏆 Milestones (11)"
+                                    Padding="9,5"
+                                    Margin="0,0,4,0"
+                                    FontSize="11.5"
                                     Style="{StaticResource IsaacFilterButtonStyle}"
                                     Click="BtnFilterMilestones_Click"/>
+                            <Button x:Name="BtnFilterRecent"
+                                    Content="🔥 Recent (0)"
+                                    Padding="9,5"
+                                    Margin="0,0,4,0"
+                                    FontSize="11.5"
+                                    Style="{StaticResource IsaacFilterButtonStyle}"
+                                    Click="BtnFilterRecent_Click"/>
+                        </StackPanel>
+
+                        <!-- 34-Character Filter & Progress Tracker -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                            <TextBlock x:Name="LblCharacterFilter" Text="Char:" Foreground="#E5B85C" FontWeight="Bold" FontSize="11.5" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <ComboBox x:Name="CmbCharacterFilter"
+                                      Width="152"
+                                      Height="28"
+                                      SelectedIndex="0"
+                                      SelectionChanged="CmbCharacterFilter_SelectionChanged"
+                                      FontSize="11.5"/>
                         </StackPanel>
 
                         <!-- DLC Filter -->
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
-                            <TextBlock Text="DLC:" Foreground="#9BA3B8" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                            <TextBlock Text="DLC:" Foreground="#9BA3B8" FontWeight="SemiBold" FontSize="11.5" VerticalAlignment="Center" Margin="0,0,4,0"/>
                             <ComboBox x:Name="CmbDlcFilter"
-                                      Width="148"
-                                      Height="30"
+                                      Width="116"
+                                      Height="28"
                                       SelectedIndex="0"
                                       SelectionChanged="CmbDlcFilter_SelectionChanged"
-                                      FontSize="12">
-                                <ComboBoxItem x:Name="CbiDlcAll" Content="All Packs (1-641)"/>
+                                      FontSize="11.5">
+                                <ComboBoxItem x:Name="CbiDlcAll" Content="All Packs"/>
                                 <ComboBoxItem Content="Rebirth (1-178)"/>
                                 <ComboBoxItem Content="Afterbirth (179-276)"/>
                                 <ComboBoxItem Content="Afterbirth+ (277-403)"/>
@@ -517,14 +558,14 @@
                         </StackPanel>
 
                         <!-- Category Filter -->
-                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock x:Name="LblCategoryFilter" Text="Category:" Foreground="#9BA3B8" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="LblCategoryFilter" Text="Category:" Foreground="#9BA3B8" FontWeight="SemiBold" FontSize="11.5" VerticalAlignment="Center" Margin="0,0,4,0"/>
                             <ComboBox x:Name="CmbCategoryFilter"
-                                      Width="148"
-                                      Height="30"
+                                      Width="118"
+                                      Height="28"
                                       SelectedIndex="0"
                                       SelectionChanged="CmbCategoryFilter_SelectionChanged"
-                                      FontSize="12">
+                                      FontSize="11.5">
                                 <ComboBoxItem x:Name="CbiCatAll" Content="All Categories"/>
                                 <ComboBoxItem x:Name="CbiCatChar" Content="Character"/>
                                 <ComboBoxItem x:Name="CbiCatItem" Content="Item"/>
@@ -540,10 +581,10 @@
 
                         <!-- Right Summary -->
                         <TextBlock x:Name="TxtFilterResultCount"
-                                   Grid.Column="4"
+                                   Grid.Column="5"
                                    Text="Showing 641 achievements"
                                    Foreground="#9BA3B8"
-                                   FontSize="12"
+                                   FontSize="11.5"
                                    FontWeight="SemiBold"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"/>
@@ -683,6 +724,19 @@
                                                                FontWeight="Bold"
                                                                FontSize="14"
                                                                VerticalAlignment="Center"/>
+                                                    <Border Visibility="{Binding RecentBadgeVisibility}"
+                                                            Background="#3D2D14"
+                                                            BorderBrush="#E5B85C"
+                                                            BorderThickness="1"
+                                                            CornerRadius="4"
+                                                            Padding="6,1"
+                                                            Margin="8,0,0,0"
+                                                            VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding RecentBadgeText}"
+                                                                   Foreground="#F5CE7E"
+                                                                   FontSize="9.5"
+                                                                   FontWeight="Bold"/>
+                                                    </Border>
                                                 </StackPanel>
 
                                                 <TextBlock Text="{Binding DisplayUnlockBy}"
@@ -692,8 +746,21 @@
                                                            HorizontalAlignment="Left"/>
                                             </StackPanel>
 
-                                            <!-- COL 2: COMPACT DLC + STATUS PILLS -->
+                                            <!-- COL 2: COMPACT CHARACTER + DLC + STATUS PILLS -->
                                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <Border Visibility="{Binding CharacterBadgeVisibility}"
+                                                        Background="#1B2234"
+                                                        BorderBrush="#334060"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        Padding="7,2"
+                                                        Margin="0,0,6,0"
+                                                        VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding AssociatedCharacter}"
+                                                               Foreground="#E5B85C"
+                                                               FontSize="10"
+                                                               FontWeight="SemiBold"/>
+                                                </Border>
                                                 <Border Background="{Binding DlcBadgeBrush}"
                                                         CornerRadius="4"
                                                         Padding="8,3"
