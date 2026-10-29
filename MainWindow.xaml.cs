@@ -27,6 +27,7 @@ namespace IsaacRepentancePlusAchievements
     {
         private readonly List<AchievementItem> _allAchievements = new List<AchievementItem>();
         private readonly List<AchievementItem> _milestoneAchievements = new List<AchievementItem>();
+        private readonly List<AchievementItem> _featuredMilestoneAchievements = new List<AchievementItem>();
         private readonly Dictionary<int, HashSet<int>> _previousSlotUnlockedIds = new Dictionary<int, HashSet<int>>();
         private readonly Dictionary<int, string> _manualSlotFilePaths = new Dictionary<int, string>();
         private readonly HashSet<int> _sessionUnlockedIds = new HashSet<int>();
@@ -62,10 +63,11 @@ namespace IsaacRepentancePlusAchievements
             { 490, "Tainted Jacob" }
         };
 
-        // Ordered progression of 11 iconic Binding of Isaac milestones (for Milestones filter tab)
+        // Ordered progression of 12 iconic Binding of Isaac milestones (for Milestones filter tab)
         private static readonly int[] MilestoneOrderIds = new int[]
         {
             34,  // It Lives!
+            41,  // Golden God!
             407, // A Secret Exit
             635, // A Strange Door
             69,  // !Platinum God!
@@ -78,11 +80,11 @@ namespace IsaacRepentancePlusAchievements
             637  // Dead God
         };
 
-        // 6 featured milestones displayed in the clean top showcase strip
+        // 6 featured milestones displayed in the right-hand Milestone Trophy Cabinet
         private static readonly int[] FeaturedMilestoneIds = new int[]
         {
             34,  // It Lives!
-            635, // A Strange Door
+            41,  // Golden God!
             69,  // Platinum God
             84,  // Real Platinum God
             339, // 1000000%
@@ -92,6 +94,7 @@ namespace IsaacRepentancePlusAchievements
         private static readonly Dictionary<int, string> MilestoneShortNames = new Dictionary<int, string>
         {
             { 34,  "It Lives!" },
+            { 41,  "Golden God!" },
             { 407, "Secret Exit" },
             { 635, "Strange Door" },
             { 69,  "Platinum God" },
@@ -423,17 +426,17 @@ namespace IsaacRepentancePlusAchievements
                 }
             }
 
-            List<AchievementItem> featuredMilestones = new List<AchievementItem>();
+            _featuredMilestoneAchievements.Clear();
             foreach (int fId in FeaturedMilestoneIds)
             {
                 AchievementItem fItem;
                 if (byId.TryGetValue(fId, out fItem))
                 {
-                    featuredMilestones.Add(fItem);
+                    _featuredMilestoneAchievements.Add(fItem);
                 }
             }
 
-            IcMilestones.ItemsSource = featuredMilestones;
+            IcMilestones.ItemsSource = _featuredMilestoneAchievements;
         }
 
         private string ResolveAssociatedCharacter(int id, string name, string unlockByEn)
@@ -635,10 +638,11 @@ namespace IsaacRepentancePlusAchievements
             // Update 34-Character Filter ComboBox with live completion counts
             UpdateCharacterFilterItems();
 
-            // Update Milestone unlocked counter
+            // Update Milestone unlocked counters (6 featured on the right cabinet, 12 total on the filter tab)
             int unlockedMilestones = _milestoneAchievements.Count(m => m.IsUnlocked);
+            int unlockedFeaturedMilestones = _featuredMilestoneAchievements.Count(m => m.IsUnlocked);
             int recentCount = _sessionUnlockedIds.Count;
-            TxtMilestonesProgress.Text = string.Format("{0} / {1}", unlockedMilestones, _milestoneAchievements.Count);
+            TxtMilestonesProgress.Text = string.Format("{0} / {1}", unlockedFeaturedMilestones, _featuredMilestoneAchievements.Count);
 
             if (_isTurkish)
             {
@@ -1190,6 +1194,21 @@ namespace IsaacRepentancePlusAchievements
         private void BtnFilterMilestones_Click(object sender, RoutedEventArgs e)
         {
             _statusFilter = "MILESTONES";
+            // Reset secondary dropdown filters so all 12 milestones are visible in the list
+            if (CmbCharacterFilter != null && CmbCharacterFilter.SelectedIndex != 0)
+            {
+                _isUpdatingCharacterCombo = true;
+                CmbCharacterFilter.SelectedIndex = 0;
+                _isUpdatingCharacterCombo = false;
+            }
+            if (CmbDlcFilter != null && CmbDlcFilter.SelectedIndex != 0)
+            {
+                CmbDlcFilter.SelectedIndex = 0;
+            }
+            if (CmbCategoryFilter != null && CmbCategoryFilter.SelectedIndex != 0)
+            {
+                CmbCategoryFilter.SelectedIndex = 0;
+            }
             UpdateStatusFilterButtonStyles();
             ApplyFilters();
         }
