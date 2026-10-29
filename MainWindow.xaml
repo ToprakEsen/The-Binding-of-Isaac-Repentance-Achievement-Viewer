@@ -616,7 +616,7 @@
                                  ScrollViewer.CanContentScroll="True"
                                  VirtualizingStackPanel.IsVirtualizing="True"
                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                 VirtualizingStackPanel.ScrollUnit="Pixel"
+                                 VirtualizingStackPanel.ScrollUnit="Item"
                                  SelectionChanged="LstAchievements_SelectionChanged">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
@@ -645,7 +645,8 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="{Binding CardBackgroundBrush}"
+                                    <Border Height="68"
+                                            Background="{Binding CardBackgroundBrush}"
                                             BorderBrush="{Binding CardBorderBrush}"
                                             BorderThickness="1"
                                             CornerRadius="5"
