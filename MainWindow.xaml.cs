@@ -166,7 +166,9 @@ namespace IsaacRepentancePlusAchievements
                     else if (cmdArgs[i] == "--test-toast" && i + 1 < cmdArgs.Length)
                     {
                         string toastOutPath = cmdArgs[i + 1];
-                        AchievementItem sample = _allAchievements.FirstOrDefault(a => a.Id == 29) ?? _allAchievements[0];
+                        AchievementItem sample = (LstAchievements.SelectedItem as AchievementItem)
+                            ?? _allAchievements.FirstOrDefault(a => a.Id == 29)
+                            ?? _allAchievements[0];
                         _sessionUnlockedIds.Add(sample.Id);
                         sample.IsRecentlyUnlocked = true;
                         SelectSaveSlot(_activeSlotIndex);
@@ -248,10 +250,10 @@ namespace IsaacRepentancePlusAchievements
 
             // 5. Update Search & Filter Controls
             TxtSearchPlaceholder.Text = _isTurkish
-                ? "Başarım adı veya #ID ara..."
-                : "Search achievement or #ID...";
+                ? "Başarım veya #ID ara..."
+                : "Search or #ID...";
             LblCharacterFilter.Text = _isTurkish ? "Karakter:" : "Char:";
-            CbiDlcAll.Content = _isTurkish ? "Tüm Paketler (1-641)" : "All Packs (1-641)";
+            CbiDlcAll.Content = _isTurkish ? "Tüm Paketler" : "All Packs";
             LblCategoryFilter.Text = _isTurkish ? "Kategori:" : "Category:";
             CbiCatAll.Content = _isTurkish ? "Tüm Kategoriler" : "All Categories";
             CbiCatChar.Content = _isTurkish ? "Karakter" : "Character";
@@ -311,7 +313,7 @@ namespace IsaacRepentancePlusAchievements
             string cacheDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "IsaacRepentancePlusAchievements",
-                "v1.3.0");
+                "v1.4.0");
 
             string cachedJson = Path.Combine(cacheDir, "Data", "achievements.json");
             if (File.Exists(cachedJson))
@@ -664,10 +666,10 @@ namespace IsaacRepentancePlusAchievements
             if (_isTurkish)
             {
                 BtnFilterAll.Content = string.Format("Tümü ({0})", _allAchievements.Count);
-                BtnFilterUnlocked.Content = string.Format("✓ Açılanlar ({0})", active.UnlockedCount);
-                BtnFilterLocked.Content = string.Format("🔒 Kilitliler ({0})", active.LockedCount);
-                BtnFilterMilestones.Content = string.Format("🏆 Kilometre Taşları ({0}/{1})", unlockedMilestones, _milestoneAchievements.Count);
-                BtnFilterRecent.Content = string.Format("🔥 Son Açılanlar ({0})", recentCount);
+                BtnFilterUnlocked.Content = string.Format("✓ Açık ({0})", active.UnlockedCount);
+                BtnFilterLocked.Content = string.Format("🔒 Kilitli ({0})", active.LockedCount);
+                BtnFilterMilestones.Content = string.Format("🏆 Kilometre ({0}/{1})", unlockedMilestones, _milestoneAchievements.Count);
+                BtnFilterRecent.Content = string.Format("🔥 Son Açılan ({0})", recentCount);
             }
             else
             {
@@ -1127,7 +1129,7 @@ namespace IsaacRepentancePlusAchievements
 
             int recentCount = _sessionUnlockedIds.Count;
             BtnFilterRecent.Content = _isTurkish
-                ? string.Format("🔥 Son Açılanlar ({0})", recentCount)
+                ? string.Format("🔥 Son Açılan ({0})", recentCount)
                 : string.Format("🔥 Recent ({0})", recentCount);
 
             UnlockToastWindow.ShowToast(target, _isTurkish, OnToastAchievementClicked);

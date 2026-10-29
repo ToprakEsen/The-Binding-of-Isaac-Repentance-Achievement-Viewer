@@ -34,12 +34,17 @@
   - Covers every DLC era: *Rebirth (1–178)*, *Afterbirth (179–276)*, *Afterbirth+ (277–403)*, *Repentance (404–637)*, and *Repentance+ (638–641)* (including Online & *Item Descriptions* achievements).
   - Uses the official pixel-art achievement icons from the game.
   - Displays a custom **padlock & chain overlay** directly on top of locked achievement icons.
-- 📜 **Detailed Unlock Guide ("SECRET FOUND!" Parchment Panel):**
-  - Displays the in-game quote and clear **How to Unlock** conditions (in both English and Turkish) on a pinned parchment note inspired by the in-game secret screen.
+- 👤 **34 Playable Characters (Normal + Tainted) Progress Tracker:**
+  - Filter achievements by any of the **17 Normal** or **17 Tainted** characters and view live completion counters per character (e.g., `Isaac (9/15)`, `Azazel (17/17 ✓)`).
+- 🔔 **Live Bottom-Right Unlock Toast Notification & Session History:**
+  - When you unlock a new secret while playing, a non-intrusive **bottom-right desktop toast notification (`UnlockToastWindow`)** slides in without stealing game focus, stays for 5 seconds, and fades out automatically.
+  - Newly unlocked secrets are highlighted with a **`🔥 NEW`** badge and listed under the **`🔥 Recent`** tab.
+- 📜 **Detailed Unlock Guide ("SECRET FOUND!" Panel & Milestone Trophy Cabinet):**
+  - Displays the in-game description, clear **How to Unlock** conditions (in both English and Turkish), and a 3×2 **Milestone Trophy Cabinet** (*It Lives!, Strange Door, Platinum God, Real Platinum God, 1000000%, Dead God*).
 - 📊 **Live In-Game Save Statistics:**
   - Displays real-time counters from your save file: *Mom Kills, Deaths, Win Streak, Best Streak, Donation Machine Coins, Greed Machine Coins, Eden Tokens, Collectibles Seen,* and *Challenges Completed*.
 - 🎨 **Custom Isaac-Themed UI:**
-  - Custom borderless title bar (drag, minimize, maximize, close), custom dark cellar & aged-bronze scrollbar, and instant search/filter by Unlock Status, DLC, Category, or `#ID`.
+  - Custom borderless title bar (drag, minimize, maximize, close), custom dark cellar & aged-bronze scrollbar, and instant search/filter by Unlock Status, Character, DLC, Category, or `#ID`.
 
 ---
 
@@ -50,8 +55,8 @@ You don't need to clone the repository or keep external `Data`/`Assets` folders 
 
 | Download Package | Size | Description |
 | :--- | :---: | :--- |
-| [**`IsaacAchievementViewer-v1.3.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Standalone.exe) | ~70 MB | **No `.NET` required.** Fully self-contained single-file executable with the .NET 8 runtime and all 641 achievement icons embedded inside. |
-| [**`IsaacAchievementViewer-v1.3.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Non-Standalone.exe) | ~2 MB | **Lightweight version (Non-Standalone).** Uses Windows' built-in `.NET Framework 4.8` with all 641 achievement icons and database embedded inside a single `.exe`. |
+| [**`IsaacAchievementViewer-v1.4.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Standalone.exe) | ~70 MB | **No `.NET` required.** Fully self-contained single-file executable with the .NET 8 runtime and all 641 achievement icons embedded inside. |
+| [**`IsaacAchievementViewer-v1.4.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Non-Standalone.exe) | ~2 MB | **Lightweight version (Non-Standalone).** Uses Windows' built-in `.NET Framework 4.8` with all 641 achievement icons and database embedded inside a single `.exe`. |
 
 ### Option 2: Build from Source
 If you want to compile the project from source on Windows using the built-in `.NET Framework MSBuild`:

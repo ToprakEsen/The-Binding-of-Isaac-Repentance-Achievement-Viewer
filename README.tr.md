@@ -33,12 +33,17 @@
 - 🏆 **641 Resmi Başarım & Oyun İçi Görseller:**
   - *Rebirth (1–178)*, *Afterbirth (179–276)*, *Afterbirth+ (277–403)*, *Repentance (404–637)* ve *Repentance+ (638–641)* (yeni Online ve *Item Descriptions* başarımları dahil) tüm **641 başarımın** orijinal piksel-art görsellerini içerir.
   - Kilitli olan başarımların görselleri üzerinde özel **kilit ve zincir simgesi katmanı** yer alır.
-- 📜 **Detaylı "Nasıl Açılır?" Rehberi (*SECRET FOUND!* Parşömen Kağıdı):**
-  - Seçilen başarımın oyun içi açıklaması ve nasıl açılacağını anlatan detaylı **Türkçe ve İngilizce** koşul rehberi sağdaki parşömen kağıdında gösterilir.
+- 👤 **34 Oynanabilir Karakter (Normal + Tainted) İlerleme Takibi:**
+  - Oyundaki **17 Normal** ve **17 Tainted** karakterin tamamına göre başarımları filtreleyebilir ve her karakterin anlık tamamlanma sayısını (`Isaac (9/15)`, `Azazel (17/17 ✓)`) görebilirsiniz.
+- 🔔 **Ekranın Sağ Altında Canlı Başarım Bildirimi (Toast) & Son Açılanlar:**
+  - Oyun açıkken yeni bir başarım açtığınızda (veya üst bardaki `🔔 Bildirim` butonuna bastığınızda), oyunu alta atmadan ekranın **sağ alt köşesinde** özel bir bildirim penceresi (`UnlockToastWindow`) belirir ve 5 saniye sonra yumuşakça kaybolur.
+  - Oturum sırasında yeni açılan başarımlar **`🔥 YENİ`** rozetiyle işaretlenir ve **`🔥 Son Açılan`** sekmesinde listelenir.
+- 📜 **Detaylı "Nasıl Açılır?" Rehberi & Kilometre Taşları Dolabı:**
+  - Seçilen başarımın oyun içi açıklaması, **Türkçe ve İngilizce** kilit açma rehberi ve 3×2 **Kilometre Taşları (Milestone Trophy Cabinet)** vitrini (*It Lives!, Strange Door, Platinum God, Real Platinum God, 1000000%, Dead God*) sağ panelde gösterilir.
 - 📊 **Canlı Kayıt İstatistikleri:**
   - Kayıt dosyasından gerçek zamanlı olarak *Mom Kills (Anne Öldürme), Ölüm Sayısı (Deaths), Kazanma Serisi (Streak), Bağış ve Greed Makinesi, Eden Token, Keşfedilen Eşya* ve *Tamamlanan Challenge* sayılarını çeker.
 - 🎨 **Özel Isaac Temalı Arayüz & Başlık Çubuğu:**
-  - Kendine özel açma/kapama/küçültme barı, özel mahzen/bronz kaydırma çubuğu (`ScrollBar`) ve Durum / DLC / Kategori / `#ID` filtreleme sistemi.
+  - Kendine özel açma/kapama/küçültme barı, özel mahzen/altın kaydırma çubuğu (`ScrollBar`) ve Durum / Karakter / DLC / Kategori / `#ID` filtreleme sistemi.
 
 ---
 
@@ -49,8 +54,8 @@ Depoyu klonlamanıza veya yanına `Data` / `Assets` klasörleri koymanıza gerek
 
 | İndirme Seçeneği | Boyut | Açıklama |
 | :--- | :---: | :--- |
-| [**`IsaacAchievementViewer-v1.3.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Standalone.exe) | ~70 MB | **`.NET` kurulumu gerektirmez.** `.NET 8` çalışma zamanı ve 641 başarım görseli tek bir `.exe` içine gömülüdür; her bilgisayarda doğrudan çalışır. |
-| [**`IsaacAchievementViewer-v1.3.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.3.0/IsaacAchievementViewer-v1.3.0-Non-Standalone.exe) | ~2 MB | **Hafif sürüm (Non-Standalone).** Windows'ta yerleşik bulunan `.NET Framework 4.8` altyapısını kullanır; 641 başarım görseli ve veritabanı yine tek `.exe` içine gömülüdür. |
+| [**`IsaacAchievementViewer-v1.4.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Standalone.exe) | ~70 MB | **`.NET` kurulumu gerektirmez.** `.NET 8` çalışma zamanı ve 641 başarım görseli tek bir `.exe` içine gömülüdür; her bilgisayarda doğrudan çalışır. |
+| [**`IsaacAchievementViewer-v1.4.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Non-Standalone.exe) | ~2 MB | **Hafif sürüm (Non-Standalone).** Windows'ta yerleşik bulunan `.NET Framework 4.8` altyapısını kullanır; 641 başarım görseli ve veritabanı yine tek `.exe` içine gömülüdür. |
 
 ### Seçenek 2: Kaynak Koddan Derleme
 Projeyi kaynak koddan derlemek isterseniz Windows üzerindeki yerleşik `.NET Framework MSBuild` ile derleyebilirsiniz:
