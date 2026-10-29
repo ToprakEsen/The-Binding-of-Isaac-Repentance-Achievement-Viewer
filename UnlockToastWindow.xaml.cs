@@ -183,7 +183,7 @@ namespace IsaacRepentancePlusAchievements
         }
 
         /// <summary>
-        /// Synthesizes a rich, Isaac/Steam-inspired "Secret Unlocked" 4-note resonant chime
+        /// Synthesizes Sound #8 (PS5 Platinum Trophy Style: Silky Shimmer Swoosh + Futuristic E-Major-9 Glassy Chord + Stereo Reverb)
         /// as a 44.1kHz 16-bit stereo PCM WAV in memory (zero external audio files needed).
         /// </summary>
         private static byte[] GenerateSecretUnlockedWav()
@@ -191,13 +191,71 @@ namespace IsaacRepentancePlusAchievements
             const int sampleRate = 44100;
             const short channels = 2;
             const short bitsPerSample = 16;
-            const double durationSeconds = 1.05;
-            int totalSamples = (int)(sampleRate * durationSeconds);
+            int totalSamples = (int)(sampleRate * 1.80);
 
-            // 4-note mystical/triumphant arpeggio: D5 (587.33 Hz), F#5 (739.99 Hz), A5 (880.00 Hz), D6 (1174.66 Hz)
-            double[] noteFreqs = new double[] { 587.33, 739.99, 880.00, 1174.66 };
-            double[] noteStarts = new double[] { 0.00, 0.09, 0.18, 0.28 };
-            double[] noteDecays = new double[] { 4.8, 4.5, 4.2, 3.2 };
+            double[] left = new double[totalSamples];
+            double[] right = new double[totalSamples];
+            Random rng = new Random(42);
+            double lpL = 0.0, lpR = 0.0;
+
+            // E Major 9th futuristic glass chord at t = 0.16s
+            double[] chord = new double[] { 164.81, 329.63, 493.88, 622.25, 739.99, 987.77, 1318.51 };
+
+            for (int i = 0; i < totalSamples; i++)
+            {
+                double t = (double)i / sampleRate;
+
+                // 1. Rising silky swoosh (0.00 - 0.28s)
+                if (t < 0.28)
+                {
+                    double swEnv = Math.Sin(Math.PI * (t / 0.28));
+                    double sweepFreq = 220.0 + 1800.0 * Math.Pow(t / 0.28, 2.0);
+                    double noiseL = (rng.NextDouble() * 2.0 - 1.0) * 0.18;
+                    double noiseR = (rng.NextDouble() * 2.0 - 1.0) * 0.18;
+                    lpL = lpL * 0.82 + noiseL * 0.18;
+                    lpR = lpR * 0.82 + noiseR * 0.18;
+                    double toneSweep = Math.Sin(2.0 * Math.PI * sweepFreq * t) * 0.15;
+                    left[i] += (lpL + toneSweep) * swEnv;
+                    right[i] += (lpR + toneSweep) * swEnv;
+                }
+
+                // 2. Glassy chord impact at 0.16s
+                double dt = t - 0.16;
+                if (dt >= 0.0)
+                {
+                    double cEnv = Math.Min(1.0, dt / 0.008) * Math.Exp(-dt * 2.3);
+                    for (int k = 0; k < chord.Length; k++)
+                    {
+                        double f = chord[k];
+                        double mod = Math.Sin(2.0 * Math.PI * f * 2.0 * dt) * Math.Exp(-dt * 12.0) * 0.7;
+                        double sig = Math.Sin(2.0 * Math.PI * f * dt + mod) * cEnv * 0.15;
+                        left[i] += sig * (k % 2 == 0 ? 1.0 : 0.75);
+                        right[i] += sig * (k % 2 == 0 ? 0.75 : 1.0);
+                    }
+                }
+            }
+
+            // 3. Stereo Reverb & Peak Normalization (-1.0 dBFS)
+            int d1 = (int)(sampleRate * 0.078);
+            int d2 = (int)(sampleRate * (0.078 * 1.37));
+            for (int i = d1; i < totalSamples; i++)
+            {
+                left[i] += right[i - d1] * 0.36;
+                right[i] += left[i - d1] * 0.36;
+            }
+            for (int i = d2; i < totalSamples; i++)
+            {
+                left[i] += left[i - d2] * (0.36 * 0.55);
+                right[i] += right[i - d2] * (0.36 * 0.55);
+            }
+
+            double maxPeak = 0.01;
+            for (int i = 0; i < totalSamples; i++)
+            {
+                if (Math.Abs(left[i]) > maxPeak) maxPeak = Math.Abs(left[i]);
+                if (Math.Abs(right[i]) > maxPeak) maxPeak = Math.Abs(right[i]);
+            }
+            double scale = 0.88 / maxPeak;
 
             using (MemoryStream ms = new MemoryStream())
             using (BinaryWriter bw = new BinaryWriter(ms))
@@ -223,36 +281,10 @@ namespace IsaacRepentancePlusAchievements
 
                 for (int i = 0; i < totalSamples; i++)
                 {
-                    double t = (double)i / sampleRate;
-                    double sampleVal = 0.0;
-
-                    for (int n = 0; n < noteFreqs.Length; n++)
-                    {
-                        double dt = t - noteStarts[n];
-                        if (dt >= 0.0)
-                        {
-                            // Smooth attack (8ms) + exponential bell decay
-                            double attack = Math.Min(1.0, dt / 0.008);
-                            double env = attack * Math.Exp(-dt * noteDecays[n]);
-
-                            double freq = noteFreqs[n];
-                            // Fundamental + warm octave sub-harmonic + bell 2nd & 3rd overtones
-                            double wave =
-                                0.60 * Math.Sin(2.0 * Math.PI * freq * dt) +
-                                0.22 * Math.Sin(2.0 * Math.PI * (freq * 0.5) * dt) +
-                                0.13 * Math.Sin(2.0 * Math.PI * (freq * 2.0) * dt) +
-                                0.05 * Math.Sin(2.0 * Math.PI * (freq * 3.0) * dt);
-
-                            sampleVal += wave * env * 0.28;
-                        }
-                    }
-
-                    if (sampleVal > 0.95) sampleVal = 0.95;
-                    if (sampleVal < -0.95) sampleVal = -0.95;
-
-                    short pcm = (short)(sampleVal * 32767);
-                    bw.Write(pcm); // Left channel
-                    bw.Write(pcm); // Right channel
+                    short sL = (short)(Math.Max(-1.0, Math.Min(1.0, left[i] * scale)) * 32767);
+                    short sR = (short)(Math.Max(-1.0, Math.Min(1.0, right[i] * scale)) * 32767);
+                    bw.Write(sL);
+                    bw.Write(sR);
                 }
 
                 bw.Flush();
