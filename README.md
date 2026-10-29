@@ -40,7 +40,7 @@
   - When you unlock a new secret while playing, a non-intrusive **bottom-right desktop toast notification (`UnlockToastWindow`)** slides in without stealing game focus, stays for 5 seconds, and fades out automatically.
   - Newly unlocked secrets are highlighted with a **`🔥 NEW`** badge and listed under the **`🔥 Recent`** tab.
 - 📜 **Detailed Unlock Guide ("SECRET FOUND!" Panel & Milestone Trophy Cabinet):**
-  - Displays the in-game description, clear **How to Unlock** conditions (in both English and Turkish), and a 3×2 **Milestone Trophy Cabinet** (*It Lives!, Strange Door, Platinum God, Real Platinum God, 1000000%, Dead God*).
+  - Displays the in-game description, clear **How to Unlock** conditions (in both English and Turkish), and a 3×2 **Milestone Trophy Cabinet** (*It Lives!, Golden God!, Platinum God, Real Platinum God, 1000000%, Dead God*).
 - 📊 **Live In-Game Save Statistics:**
   - Displays real-time counters from your save file: *Mom Kills, Deaths, Win Streak, Best Streak, Donation Machine Coins, Greed Machine Coins, Eden Tokens, Collectibles Seen,* and *Challenges Completed*.
 - 🎨 **Custom Isaac-Themed UI:**
@@ -55,8 +55,8 @@ You don't need to clone the repository or keep external `Data`/`Assets` folders 
 
 | Download Package | Size | Description |
 | :--- | :---: | :--- |
-| [**`IsaacAchievementViewer-v1.4.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Standalone.exe) | ~70 MB | **No `.NET` required.** Fully self-contained single-file executable with the .NET 8 runtime and all 641 achievement icons embedded inside. |
-| [**`IsaacAchievementViewer-v1.4.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Non-Standalone.exe) | ~2 MB | **Lightweight version (Non-Standalone).** Uses Windows' built-in `.NET Framework 4.8` with all 641 achievement icons and database embedded inside a single `.exe`. |
+| [**`IsaacAchievementViewer-v1.4.1-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.1/IsaacAchievementViewer-v1.4.1-Standalone.exe) | ~70 MB | **No `.NET` required.** Fully self-contained single-file executable with the .NET 8 runtime and all 641 achievement icons embedded inside. |
+| [**`IsaacAchievementViewer-v1.4.1-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.1/IsaacAchievementViewer-v1.4.1-Non-Standalone.exe) | ~2 MB | **Lightweight version (Non-Standalone).** Uses Windows' built-in `.NET Framework 4.8` with all 641 achievement icons and database embedded inside a single `.exe`. |
 
 ### Option 2: Build from Source
 If you want to compile the project from source on Windows using the built-in `.NET Framework MSBuild`:

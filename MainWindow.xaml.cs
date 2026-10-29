@@ -318,7 +318,7 @@ namespace IsaacRepentancePlusAchievements
             string cacheDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "IsaacRepentancePlusAchievements",
-                "v1.4.0");
+                "v1.4.1");
 
             string cachedJson = Path.Combine(cacheDir, "Data", "achievements.json");
             if (File.Exists(cachedJson))
