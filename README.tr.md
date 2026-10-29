@@ -35,11 +35,11 @@
   - Kilitli olan başarımların görselleri üzerinde özel **kilit ve zincir simgesi katmanı** yer alır.
 - 👤 **34 Oynanabilir Karakter (Normal + Tainted) İlerleme Takibi:**
   - Oyundaki **17 Normal** ve **17 Tainted** karakterin tamamına göre başarımları filtreleyebilir ve her karakterin anlık tamamlanma sayısını (`Isaac (9/15)`, `Azazel (17/17 ✓)`) görebilirsiniz.
-- 🔔 **Ekranın Sağ Altında Canlı Başarım Bildirimi (Toast) & Son Açılanlar:**
-  - Oyun açıkken yeni bir başarım açtığınızda (veya üst bardaki `🔔 Bildirim` butonuna bastığınızda), oyunu alta atmadan ekranın **sağ alt köşesinde** özel bir bildirim penceresi (`UnlockToastWindow`) belirir ve 5 saniye sonra yumuşakça kaybolur.
+- 🔔 **Ekranın Sağ Altında Sesli Canlı Başarım Bildirimi (Toast) & Son Açılanlar:**
+  - Oyun penceresiz tam ekran (Borderless Fullscreen) açıkken yeni bir başarım açtığınızda (veya üst bardaki `🔔 Bildirim` butonuna bastığınızda), oyunu alta atmadan veya `Alt+Tab` gerektirmeden oyunun doğrudan üstünde, ekranın **sağ alt köşesinde** özel **PS5 Platin Kupa** ses efektiyle birlikte şık bir bildirim penceresi (`UnlockToastWindow`) belirir ve 5 saniye sonra yumuşakça kaybolur.
   - Oturum sırasında yeni açılan başarımlar **`🔥 YENİ`** rozetiyle işaretlenir ve **`🔥 Son Açılan`** sekmesinde listelenir.
 - 📜 **Detaylı "Nasıl Açılır?" Rehberi & Kilometre Taşları Dolabı:**
-  - Seçilen başarımın oyun içi açıklaması, **Türkçe ve İngilizce** kilit açma rehberi ve 3×2 **Kilometre Taşları (Milestone Trophy Cabinet)** vitrini (*It Lives!, Strange Door, Platinum God, Real Platinum God, 1000000%, Dead God*) sağ panelde gösterilir.
+  - Seçilen başarımın oyun içi açıklaması, **Türkçe ve İngilizce** kilit açma rehberi ve 3×2 **Kilometre Taşları (Milestone Trophy Cabinet)** vitrini (*It Lives!, Golden God!, Platinum God, Real Platinum God, 1000000%, Dead God*) sağ panelde gösterilir.
 - 📊 **Canlı Kayıt İstatistikleri:**
   - Kayıt dosyasından gerçek zamanlı olarak *Mom Kills (Anne Öldürme), Ölüm Sayısı (Deaths), Kazanma Serisi (Streak), Bağış ve Greed Makinesi, Eden Token, Keşfedilen Eşya* ve *Tamamlanan Challenge* sayılarını çeker.
 - 🎨 **Özel Isaac Temalı Arayüz & Başlık Çubuğu:**
@@ -54,8 +54,8 @@ Depoyu klonlamanıza veya yanına `Data` / `Assets` klasörleri koymanıza gerek
 
 | İndirme Seçeneği | Boyut | Açıklama |
 | :--- | :---: | :--- |
-| [**`IsaacAchievementViewer-v1.4.0-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Standalone.exe) | ~70 MB | **`.NET` kurulumu gerektirmez.** `.NET 8` çalışma zamanı ve 641 başarım görseli tek bir `.exe` içine gömülüdür; her bilgisayarda doğrudan çalışır. |
-| [**`IsaacAchievementViewer-v1.4.0-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.0/IsaacAchievementViewer-v1.4.0-Non-Standalone.exe) | ~2 MB | **Hafif sürüm (Non-Standalone).** Windows'ta yerleşik bulunan `.NET Framework 4.8` altyapısını kullanır; 641 başarım görseli ve veritabanı yine tek `.exe` içine gömülüdür. |
+| [**`IsaacAchievementViewer-v1.4.1-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.1/IsaacAchievementViewer-v1.4.1-Standalone.exe) | ~70 MB | **`.NET` kurulumu gerektirmez.** `.NET 8` çalışma zamanı ve 641 başarım görseli tek bir `.exe` içine gömülüdür; her bilgisayarda doğrudan çalışır. |
+| [**`IsaacAchievementViewer-v1.4.1-Non-Standalone.exe`**](https://github.com/ToprakEsen/The-Binding-of-Isaac-Repentance-Achievement-Viewer/releases/download/v1.4.1/IsaacAchievementViewer-v1.4.1-Non-Standalone.exe) | ~2 MB | **Hafif sürüm (Non-Standalone).** Windows'ta yerleşik bulunan `.NET Framework 4.8` altyapısını kullanır; 641 başarım görseli ve veritabanı yine tek `.exe` içine gömülüdür. |
 
 ### Seçenek 2: Kaynak Koddan Derleme
 Projeyi kaynak koddan derlemek isterseniz Windows üzerindeki yerleşik `.NET Framework MSBuild` ile derleyebilirsiniz:
