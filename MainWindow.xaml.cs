@@ -28,6 +28,7 @@ namespace IsaacRepentancePlusAchievements
         private readonly List<AchievementItem> _allAchievements = new List<AchievementItem>();
         private readonly List<AchievementItem> _milestoneAchievements = new List<AchievementItem>();
         private readonly Dictionary<int, HashSet<int>> _previousSlotUnlockedIds = new Dictionary<int, HashSet<int>>();
+        private readonly Dictionary<int, string> _manualSlotFilePaths = new Dictionary<int, string>();
         private readonly HashSet<int> _sessionUnlockedIds = new HashSet<int>();
         private List<SaveSlotData> _saveSlots = new List<SaveSlotData>();
         private int _activeSlotIndex = 0; // 0 = Slot 1, 1 = Slot 2, 2 = Slot 3
@@ -36,6 +37,7 @@ namespace IsaacRepentancePlusAchievements
         private bool _isUpdatingCharacterCombo = false;
         private FileSystemWatcher _saveWatcher;
         private DispatcherTimer _watcherDebounceTimer;
+        private DispatcherTimer _liveAutoPollTimer;
         private bool _isInitialized = false;
 
         // All 34 Playable Characters (17 Normal + 17 Tainted)
@@ -508,9 +510,27 @@ namespace IsaacRepentancePlusAchievements
             return null;
         }
 
+        private List<SaveSlotData> ReadAllSlotsRespectingManualOverrides()
+        {
+            List<SaveSlotData> slots = ReadOnlySaveReader.AutoDetectAndReadAllSlots();
+            foreach (KeyValuePair<int, string> kvp in _manualSlotFilePaths)
+            {
+                int idx = kvp.Key;
+                string manualPath = kvp.Value;
+                if (idx >= 0 && idx < slots.Count && !string.IsNullOrEmpty(manualPath) && File.Exists(manualPath))
+                {
+                    slots[idx] = ReadOnlySaveReader.ReadSaveFileReadOnly(
+                        manualPath,
+                        idx + 1,
+                        _isTurkish ? "Manuel Seçilen (Salt Okunur)" : "Manual Selection (Read-Only)");
+                }
+            }
+            return slots;
+        }
+
         private void LoadAndApplySaveFiles()
         {
-            _saveSlots = ReadOnlySaveReader.AutoDetectAndReadAllSlots();
+            _saveSlots = ReadAllSlotsRespectingManualOverrides();
 
             // Check for newly unlocked achievements across any slot since the last read
             List<AchievementItem> newlyUnlockedItems = new List<AchievementItem>();
@@ -522,10 +542,12 @@ namespace IsaacRepentancePlusAchievements
                 HashSet<int> prevSet;
                 if (_previousSlotUnlockedIds.TryGetValue(sIdx, out prevSet))
                 {
+                    bool slotHasNewUnlock = false;
                     foreach (int achId in slot.UnlockedAchievementIds)
                     {
                         if (!prevSet.Contains(achId))
                         {
+                            slotHasNewUnlock = true;
                             _sessionUnlockedIds.Add(achId);
                             AchievementItem item = _allAchievements.FirstOrDefault(a => a.Id == achId);
                             if (item != null)
@@ -534,6 +556,12 @@ namespace IsaacRepentancePlusAchievements
                                 newlyUnlockedItems.Add(item);
                             }
                         }
+                    }
+
+                    // Automatically switch active slot to the save slot where the player just unlocked a secret
+                    if (slotHasNewUnlock)
+                    {
+                        _activeSlotIndex = sIdx;
                     }
                 }
 
@@ -925,6 +953,18 @@ namespace IsaacRepentancePlusAchievements
         {
             try
             {
+                // 1. Ensure continuous 1.5s read-only background polling timer is active
+                // (Guarantees instant detection even when NTFS delays FileSystemWatcher events while the game is running)
+                if (_liveAutoPollTimer == null)
+                {
+                    _liveAutoPollTimer = new DispatcherTimer
+                    {
+                        Interval = TimeSpan.FromMilliseconds(1500)
+                    };
+                    _liveAutoPollTimer.Tick += (s, args) => PollSaveFilesForLiveChanges();
+                    _liveAutoPollTimer.Start();
+                }
+
                 if (_saveWatcher != null)
                 {
                     _saveWatcher.EnableRaisingEvents = false;
@@ -941,7 +981,7 @@ namespace IsaacRepentancePlusAchievements
                 if (_watcherDebounceTimer == null)
                 {
                     _watcherDebounceTimer = new DispatcherTimer();
-                    _watcherDebounceTimer.Interval = TimeSpan.FromMilliseconds(800);
+                    _watcherDebounceTimer.Interval = TimeSpan.FromMilliseconds(500);
                     _watcherDebounceTimer.Tick += (s, args) =>
                     {
                         _watcherDebounceTimer.Stop();
@@ -950,14 +990,69 @@ namespace IsaacRepentancePlusAchievements
                 }
 
                 _saveWatcher = new FileSystemWatcher(dir, "*.dat");
-                _saveWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName;
+                _saveWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName | NotifyFilters.CreationTime;
                 _saveWatcher.Changed += OnSaveDirectoryChanged;
                 _saveWatcher.Created += OnSaveDirectoryChanged;
+                _saveWatcher.Renamed += OnSaveDirectoryRenamed;
                 _saveWatcher.EnableRaisingEvents = true;
             }
             catch
             {
             }
+        }
+
+        private void PollSaveFilesForLiveChanges()
+        {
+            try
+            {
+                List<SaveSlotData> latestSlots = ReadAllSlotsRespectingManualOverrides();
+                bool hasAnyChange = false;
+
+                for (int i = 0; i < latestSlots.Count; i++)
+                {
+                    SaveSlotData latest = latestSlots[i];
+                    if (!latest.Exists) continue;
+
+                    HashSet<int> prevIds;
+                    if (!_previousSlotUnlockedIds.TryGetValue(i, out prevIds))
+                    {
+                        hasAnyChange = true;
+                        break;
+                    }
+
+                    if (!latest.UnlockedAchievementIds.SetEquals(prevIds))
+                    {
+                        hasAnyChange = true;
+                        break;
+                    }
+
+                    if (i < _saveSlots.Count && _saveSlots[i].Exists)
+                    {
+                        SaveSlotData oldSlot = _saveSlots[i];
+                        if (latest.MomKills != oldSlot.MomKills ||
+                            latest.Deaths != oldSlot.Deaths ||
+                            latest.WinStreak != oldSlot.WinStreak ||
+                            latest.EdenTokens != oldSlot.EdenTokens)
+                        {
+                            hasAnyChange = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasAnyChange)
+                {
+                    LoadAndApplySaveFiles();
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void OnSaveDirectoryRenamed(object sender, RenamedEventArgs e)
+        {
+            OnSaveDirectoryChanged(sender, e);
         }
 
         private void OnSaveDirectoryChanged(object sender, FileSystemEventArgs e)
@@ -1051,17 +1146,8 @@ namespace IsaacRepentancePlusAchievements
 
             if (dlg.ShowDialog(this) == true)
             {
-                SaveSlotData customSlot = ReadOnlySaveReader.ReadSaveFileReadOnly(
-                    dlg.FileName,
-                    _activeSlotIndex + 1,
-                    _isTurkish ? "Manuel Seçilen (Salt Okunur)" : "Manual Selection (Read-Only)");
-
-                _saveSlots[_activeSlotIndex] = customSlot;
-                if (_activeSlotIndex == 0) UpdateSlotButtonSummary(0, TxtSlot1Percent, TxtSlot1Count, TxtSlot1Rank);
-                if (_activeSlotIndex == 1) UpdateSlotButtonSummary(1, TxtSlot2Percent, TxtSlot2Count, TxtSlot2Rank);
-                if (_activeSlotIndex == 2) UpdateSlotButtonSummary(2, TxtSlot3Percent, TxtSlot3Count, TxtSlot3Rank);
-
-                SelectSaveSlot(_activeSlotIndex);
+                _manualSlotFilePaths[_activeSlotIndex] = dlg.FileName;
+                LoadAndApplySaveFiles();
             }
         }
 
@@ -1133,6 +1219,22 @@ namespace IsaacRepentancePlusAchievements
                 : string.Format("🔥 Recent ({0})", recentCount);
 
             UnlockToastWindow.ShowToast(target, _isTurkish, OnToastAchievementClicked);
+
+            // If user switches to the game within 3.5 seconds after clicking Test Toast,
+            // fire the toast again over the fullscreen game so they can verify the in-game overlay!
+            DispatcherTimer delayedOverlayTest = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(3.5)
+            };
+            delayedOverlayTest.Tick += (s2, e2) =>
+            {
+                delayedOverlayTest.Stop();
+                if (!IsActive)
+                {
+                    UnlockToastWindow.ShowToast(target, _isTurkish, OnToastAchievementClicked);
+                }
+            };
+            delayedOverlayTest.Start();
         }
 
         private void OnToastAchievementClicked(AchievementItem item)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -189,15 +189,38 @@ namespace IsaacRepentancePlusAchievements.Services
                 return null;
             }
 
-            // Sort by Priority group first (prefer active Repentance+ over old backups), then by LastWriteTime descending
-            CandidateFile best = candidates
+            // Sort by Priority group first (prefer active Repentance+ over old backups),
+            // and inspect live unlocked counts on top candidates so NTFS metadata caching never hides a new unlock.
+            List<CandidateFile> topCandidates = candidates
                 .OrderByDescending(c => c.Priority >= 90 ? 1 : 0)
+                .ThenByDescending(c => c.LastWriteUtc)
+                .ThenByDescending(c => c.Priority)
+                .Take(4)
+                .ToList();
+
+            CandidateFile best = topCandidates
+                .OrderByDescending(c => c.Priority >= 90 ? 1 : 0)
+                .ThenByDescending(c => GetLiveUnlockedScore(c.FilePath))
                 .ThenByDescending(c => c.LastWriteUtc)
                 .ThenByDescending(c => c.Priority)
                 .First();
 
             sourceLabel = best.SourceLabel;
             return best.FilePath;
+        }
+
+        private static int GetLiveUnlockedScore(string filePath)
+        {
+            try
+            {
+                SaveSlotData data = ReadSaveFileReadOnly(filePath, 1, "");
+                if (!data.Exists) return -1;
+                return (data.UnlockedCount * 100000) + data.MomKills + data.Deaths;
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         /// <summary>
